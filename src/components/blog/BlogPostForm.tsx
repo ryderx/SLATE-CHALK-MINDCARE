@@ -33,16 +33,18 @@ export function BlogPostForm({ post, action, submitButtonText = 'Submit' }: Blog
         description: state.message,
         variant: "default",
       });
+      // Explicitly cast state to include newSlug for type safety
       const newSlug = (state as FormState & { newSlug?: string }).newSlug;
       if (newSlug) {
+        // Redirect to the newly created/updated post using its slug
         router.push(`/blog/${newSlug}`);
-      } else if (post) { // on update if slug doesn't change
+      } else if (post) { // Fallback for update if slug didn't change (less likely with current logic)
         router.push(`/blog/${post.slug}`);
-      } else {
+      } else { // Fallback if no slug is available (e.g., after creation error somehow?)
         router.push('/blog');
       }
       router.refresh(); // Ensure client cache is updated
-    } else if (state.message && !state.success && state.errors) { // Only show error toast if there are errors
+    } else if (state.message && !state.success && (state.errors || state.message.startsWith('Failed') || state.message.startsWith('Unauthorized'))) { // Show error toast if there are errors or a general failure message
       toast({
         title: "Error",
         description: state.message + (state.errors?.general ? ` ${state.errors.general.join(', ')}` : ''),
@@ -92,6 +94,12 @@ export function BlogPostForm({ post, action, submitButtonText = 'Submit' }: Blog
             {state.errors.general.join(', ')}
           </p>
         )}
+      {/* Display general error message if not success and no specific field errors */}
+      {state.message && !state.success && !state.errors && (
+         <p className="text-sm text-destructive mt-1">
+            {state.message}
+          </p>
+      )}
       <Button type="submit" className="bg-accent hover:bg-accent/90 text-accent-foreground" size="lg">
         {submitButtonText}
       </Button>

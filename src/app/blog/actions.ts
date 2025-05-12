@@ -54,6 +54,7 @@ export async function createPost(prevState: FormState, formData: FormData): Prom
     const newPost = await dbCreatePost(validatedFields.data);
     revalidatePath('/blog');
     revalidatePath(`/blog/${newPost.slug}`);
+    // Return success state with the new slug for redirection
     return { message: `Post "${newPost.title}" created successfully!`, success: true, newSlug: newPost.slug };
   } catch (error) {
     console.error("Create post action failed:", error);
