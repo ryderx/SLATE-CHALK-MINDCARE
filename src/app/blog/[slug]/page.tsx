@@ -25,12 +25,16 @@ export async function generateMetadata({ params }: BlogPostPageProps) {
 }
 
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
+  console.log(`Fetching post for slug: ${params.slug}`); // Added logging
   const post = await getPostBySlug(params.slug);
   const userIsAdmin = await isAdmin(); // Check if the user is an admin
 
   if (!post) {
+    console.error(`Post not found for slug: ${params.slug}`); // Added logging
     notFound();
   }
+
+  console.log(`Post found for slug ${params.slug}:`, post.title); // Added logging
 
   return (
     <div className="container mx-auto py-12 md:py-20 max-w-4xl">

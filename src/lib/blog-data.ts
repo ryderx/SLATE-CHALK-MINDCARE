@@ -39,18 +39,20 @@ function slugify(text: string): string {
 }
 
 export async function getPosts(): Promise<Post[]> {
-  // Simulate API delay
-  await new Promise(resolve => setTimeout(resolve, 100));
+  // Simulate API delay removed
+  // await new Promise(resolve => setTimeout(resolve, 100));
   return [...posts].sort((a,b) => b.createdAt.getTime() - a.createdAt.getTime());
 }
 
 export async function getPostBySlug(slug: string): Promise<Post | undefined> {
-  await new Promise(resolve => setTimeout(resolve, 50));
+  // Simulate API delay removed
+  // await new Promise(resolve => setTimeout(resolve, 50));
   return posts.find(post => post.slug === slug);
 }
 
 export async function createPost(data: PostFormData): Promise<Post> {
-  await new Promise(resolve => setTimeout(resolve, 100));
+  // Simulate API delay removed
+  // await new Promise(resolve => setTimeout(resolve, 100));
   const slug = slugify(data.title);
   // Check if slug already exists, append number if it does
   let finalSlug = slug;
@@ -69,11 +71,14 @@ export async function createPost(data: PostFormData): Promise<Post> {
     updatedAt: new Date(),
   };
   posts.push(newPost);
+  console.log('Post created:', newPost); // Added logging
+  console.log('Current posts array:', posts.map(p => p.slug)); // Added logging
   return newPost;
 }
 
 export async function updatePost(slug: string, data: PostFormData): Promise<Post | undefined> {
-  await new Promise(resolve => setTimeout(resolve, 100));
+  // Simulate API delay removed
+  // await new Promise(resolve => setTimeout(resolve, 100));
   const postIndex = posts.findIndex(post => post.slug === slug);
   if (postIndex === -1) {
     return undefined;
@@ -114,7 +119,8 @@ export async function updatePost(slug: string, data: PostFormData): Promise<Post
 }
 
 export async function deletePost(slug: string): Promise<boolean> {
-  await new Promise(resolve => setTimeout(resolve, 100));
+  // Simulate API delay removed
+  // await new Promise(resolve => setTimeout(resolve, 100));
   const initialLength = posts.length;
   posts = posts.filter(post => post.slug !== slug);
   return posts.length < initialLength;
