@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { NavLink } from './NavLink';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { Menu, LogIn, LogOut, Settings } from 'lucide-react'; // Added Settings icon
+import { Menu, LogIn, LogOut, Settings, PlusCircle } from 'lucide-react'; // Added Settings and PlusCircle icons
 import { getCurrentUserSession } from '@/lib/auth-utils'; // Import server-side session check
 import { LogoutButton } from './LogoutButton'; // Import client component for logout
 
