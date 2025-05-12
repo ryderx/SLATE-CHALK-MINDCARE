@@ -22,7 +22,7 @@ export function BlogPostCard({ post }: BlogPostCardProps) {
               layout="fill"
               objectFit="cover"
               className="hover:scale-105 transition-transform duration-300"
-              data-ai-hint="abstract blog"
+              data-ai-hint="colorful pattern"
             />
           </div>
           <CardTitle className="text-2xl text-primary hover:text-primary/80 transition-colors">{post.title}</CardTitle>

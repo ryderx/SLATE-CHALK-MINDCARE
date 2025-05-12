@@ -17,11 +17,11 @@ export default function AboutPage() {
           <div className="md:w-1/2 mb-8 md:mb-0">
             <Image
               src="https://picsum.photos/seed/aboutstory/600/450"
-              alt="Comforting therapy environment"
+              alt="Illustration of children playing and learning"
               width={600}
               height={450}
               className="rounded-lg shadow-xl"
-              data-ai-hint="team discussion"
+              data-ai-hint="children playing"
             />
           </div>
           <div className="md:w-1/2">
@@ -88,11 +88,11 @@ export default function AboutPage() {
             <Card key={i} className="text-center shadow-lg overflow-hidden">
               <Image
                 src={`https://picsum.photos/seed/team${i}/400/400`}
-                alt={`Team Member ${i}`}
+                alt={`Team Member ${i} - Friendly Cartoon Character`}
                 width={400}
                 height={400}
                 className="w-full h-64 object-cover"
-                data-ai-hint="professional portrait"
+                data-ai-hint="cartoon character"
               />
               <CardHeader>
                 <CardTitle className="text-2xl text-primary">Dr. Jane Doe {i}</CardTitle>

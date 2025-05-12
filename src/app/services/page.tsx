@@ -8,28 +8,28 @@ const services = [
     title: "Individual Therapy",
     description: "Personalized one-on-one sessions to address a wide range of mental health concerns, including anxiety, depression, trauma, and stress management.",
     imgSrc: "https://picsum.photos/seed/service1/600/400",
-    aiHint: "counseling session",
+    aiHint: "kids learning",
   },
   {
     icon: Users,
     title: "Couples Counseling",
     description: "Support for couples seeking to improve communication, resolve conflicts, and strengthen their relationship in a constructive environment.",
     imgSrc: "https://picsum.photos/seed/service2/600/400",
-    aiHint: "group therapy",
+    aiHint: "children sharing",
   },
   {
     icon: Heart,
     title: "Family Therapy",
     description: "Guidance for families to navigate challenges, improve dynamics, and foster healthier relationships among members.",
     imgSrc: "https://picsum.photos/seed/service3/600/400",
-    aiHint: "family support",
+    aiHint: "happy family drawing",
   },
   {
     icon: Smile,
     title: "Child & Adolescent Counseling",
     description: "Specialized therapy for children and teenagers dealing with emotional, behavioral, or developmental issues, provided in an age-appropriate manner.",
     imgSrc: "https://picsum.photos/seed/service4/600/400",
-    aiHint: "child psychology",
+    aiHint: "child with toys",
   },
 ];
 

@@ -112,11 +112,11 @@ export default function ContactPage() {
           <div className="rounded-lg overflow-hidden shadow-lg">
             <Image 
               src="https://picsum.photos/seed/map/600/350" 
-              alt="Map location" 
+              alt="Colorful illustrated map location" 
               width={600} 
               height={350} 
               className="w-full h-auto object-cover"
-              data-ai-hint="map location"
+              data-ai-hint="colorful map"
             />
           </div>
         </div>

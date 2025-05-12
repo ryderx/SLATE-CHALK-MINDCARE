@@ -32,7 +32,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
   return (
     <div className="container mx-auto py-12 md:py-20 max-w-4xl">
-      <article className="prose prose-lg lg:prose-xl dark:prose-invert prose-headings:font-playfair prose-headings:text-primary prose-p:text-foreground prose-a:text-accent hover:prose-a:text-accent/80 max-w-none">
+      <article className="prose prose-lg lg:prose-xl dark:prose-invert prose-headings:text-primary prose-p:text-foreground prose-a:text-accent hover:prose-a:text-accent/80 max-w-none">
         <div className="mb-8">
           <h1 className="text-5xl font-bold text-primary mb-4 !mt-0">{post.title}</h1>
           <div className="flex items-center text-muted-foreground text-sm mb-6">
@@ -50,7 +50,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             alt={post.title}
             layout="fill"
             objectFit="cover"
-            data-ai-hint="blog lifestyle"
+            data-ai-hint="doodle background"
             priority
           />
         </div>

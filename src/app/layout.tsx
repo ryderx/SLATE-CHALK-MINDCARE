@@ -1,22 +1,22 @@
 import type { Metadata } from 'next';
-import { Playfair_Display, Montserrat } from 'next/font/google';
+import { Montserrat } from 'next/font/google'; // Removed Playfair_Display
 import './globals.css';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { Toaster } from "@/components/ui/toaster";
 
-const playfair = Playfair_Display({
-  subsets: ['latin'],
-  variable: '--font-playfair',
-  display: 'swap',
-  weight: ['400', '700'],
-});
+// const playfair = Playfair_Display({ // Removed Playfair_Display
+//   subsets: ['latin'],
+//   variable: '--font-playfair',
+//   display: 'swap',
+//   weight: ['400', '700'],
+// });
 
 const montserrat = Montserrat({
   subsets: ['latin'],
   variable: '--font-montserrat',
   display: 'swap',
-  weight: ['300', '400', '500', '700'],
+  weight: ['300', '400', '500', '700', '900'], // Added 900 for potentially bolder headings
 });
 
 export const metadata: Metadata = {
@@ -30,7 +30,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${playfair.variable} ${montserrat.variable}`}>
+    <html lang="en" className={`${montserrat.variable}`}> {/* Removed playfair.variable */}
       <body>
         <div className="flex flex-col min-h-screen">
           <Header />

@@ -11,11 +11,11 @@ export default function HomePage() {
       <section className="relative h-[calc(100vh-5rem)] flex items-center justify-center text-center bg-secondary/30">
         <Image
           src="https://picsum.photos/1600/900"
-          alt="Calm therapy session background"
+          alt="Playful and colorful background"
           layout="fill"
           objectFit="cover"
           className="absolute inset-0 z-0 opacity-30"
-          data-ai-hint="calm therapy"
+          data-ai-hint="playful background"
           priority
         />
         <div className="relative z-10 container mx-auto px-4">
@@ -94,11 +94,11 @@ export default function HomePage() {
             <div className="md:w-1/2 mb-8 md:mb-0">
               <Image 
                 src="https://picsum.photos/600/400?grayscale" 
-                alt="Supportive counseling session" 
+                alt="Happy kids illustration" 
                 width={600} 
                 height={400} 
                 className="rounded-lg shadow-xl"
-                data-ai-hint="mental wellness" 
+                data-ai-hint="happy kids" 
               />
             </div>
             <div className="md:w-1/2">
