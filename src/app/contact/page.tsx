@@ -1,4 +1,5 @@
-'use client'; // Required for form handling with useFormState or client-side interactions
+// Required for form handling with useActionState or client-side interactions
+'use client'; 
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,9 +7,8 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Phone, Mail, MapPin } from "lucide-react";
-import { useFormState } from 'react-dom';
+import { useActionState, useEffect } from "react"; // Changed from 'react-dom' and added useEffect
 import { useToast } from '@/hooks/use-toast';
-import { useEffect } from "react";
 import Image from "next/image";
 
 // Mock server action for contact form
@@ -35,7 +35,7 @@ async function submitContactForm(prevState: any, formData: FormData) {
 const initialFormState = { success: false, message: '' };
 
 export default function ContactPage() {
-  const [state, formAction] = useFormState(submitContactForm, initialFormState);
+  const [state, formAction] = useActionState(submitContactForm, initialFormState); // Changed from useFormState
   const { toast } = useToast();
 
   useEffect(() => {
@@ -49,6 +49,7 @@ export default function ContactPage() {
         // Optionally reset form here if using controlled components,
         // or rely on browser reset for basic forms.
         // For this simple form, a page refresh or navigating away would clear it.
+        // Consider document.getElementById('contact-form').reset() if form has an id
       }
     }
   }, [state, toast]);
@@ -68,7 +69,7 @@ export default function ContactPage() {
             <CardTitle className="text-3xl text-primary">Send Us a Message</CardTitle>
           </CardHeader>
           <CardContent>
-            <form action={formAction} className="space-y-6">
+            <form action={formAction} className="space-y-6" id="contact-form"> {/* Added id for potential reset */}
               <div>
                 <Label htmlFor="name" className="font-medium">Full Name</Label>
                 <Input type="text" id="name" name="name" required className="mt-1" />
@@ -124,3 +125,4 @@ export default function ContactPage() {
     </div>
   );
 }
+
