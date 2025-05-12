@@ -6,9 +6,11 @@ import { redirect } from 'next/navigation';
 import { z } from 'zod';
 import fs from 'fs/promises'; // Import Node.js file system module
 import path from 'path'; // Import Node.js path module
+import { cookies } from 'next/headers'; // Import cookies
 import { slugify } from '@/lib/blog-data'; // Keep slugify if needed
 import type { PostFormData, Post } from '@/lib/types';
 import { isAdminSession } from '@/lib/auth-utils'; // Use server-side session check
+import { SESSION_COOKIE_NAME } from '@/lib/constants'; // Import session cookie name
 
 // Ensure NEXT_PUBLIC_APP_URL is set in your .env.local or environment
 const API_BASE_URL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:9002';
@@ -51,6 +53,20 @@ export type FormState = {
   };
   success: boolean;
 }
+
+// Helper function to get session cookie for fetch requests
+function getAuthHeaders(): HeadersInit {
+    const cookieStore = cookies();
+    const sessionCookie = cookieStore.get(SESSION_COOKIE_NAME);
+    const headers: HeadersInit = {
+        'Content-Type': 'application/json',
+    };
+    if (sessionCookie) {
+        headers['Cookie'] = `${sessionCookie.name}=${sessionCookie.value}`;
+    }
+    return headers;
+}
+
 
 // Helper function to check admin before proceeding with mutation
 async function checkAdmin(): Promise<void> {
@@ -164,14 +180,13 @@ export async function createPost(prevState: FormState, formData: FormData): Prom
       content: validatedFields.data.content,
       imageUrl: imageUrl, // Send the URL to the API
     };
+    
+    const authHeaders = getAuthHeaders();
 
     // Call the backend API to create the post
     const response = await fetch(`${API_BASE_URL}/api/posts`, {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            // Cookies are typically sent automatically by the browser/fetch in server actions
-        },
+        headers: authHeaders,
         body: JSON.stringify(apiData),
     });
 
@@ -229,10 +244,11 @@ export async function updatePost(slug: string, prevState: FormState, formData: F
   let updatedPostSlug = slug; // Keep track of the slug, potentially updated by API
   let finalImageUrl: string | undefined = undefined;
   let originalPost: Post | undefined;
+  const authHeaders = getAuthHeaders();
 
   try {
       // Fetch original post to get existing imageUrl and check for title changes
-      const originalPostResponse = await fetch(`${API_BASE_URL}/api/posts/${encodeURIComponent(slug)}`);
+      const originalPostResponse = await fetch(`${API_BASE_URL}/api/posts/${encodeURIComponent(slug)}`, { headers: authHeaders });
       if (!originalPostResponse.ok) {
           if (originalPostResponse.status === 404) {
             throw new Error('Post not found.');
@@ -267,10 +283,7 @@ export async function updatePost(slug: string, prevState: FormState, formData: F
     // Call the backend API to update the post
      const response = await fetch(`${API_BASE_URL}/api/posts/${encodeURIComponent(slug)}`, {
         method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json',
-             // Cookies are typically sent automatically
-        },
+        headers: authHeaders,
         body: JSON.stringify(apiData),
     });
 
@@ -305,11 +318,12 @@ export async function updatePost(slug: string, prevState: FormState, formData: F
 
 export async function deletePostAction(slug: string): Promise<{ success: boolean; message: string }> {
   let postToDelete: Post | undefined;
+  const authHeaders = getAuthHeaders();
   try {
     await checkAdmin();
 
      // Fetch post info to get image URL before deleting the record
-     const postResponse = await fetch(`${API_BASE_URL}/api/posts/${encodeURIComponent(slug)}`);
+     const postResponse = await fetch(`${API_BASE_URL}/api/posts/${encodeURIComponent(slug)}`, { headers: authHeaders });
      if (postResponse.ok) {
        postToDelete = await postResponse.json();
      } else if (postResponse.status !== 404) {
@@ -320,9 +334,7 @@ export async function deletePostAction(slug: string): Promise<{ success: boolean
      // Call the backend API to delete the post record
     const deleteResponse = await fetch(`${API_BASE_URL}/api/posts/${encodeURIComponent(slug)}`, {
         method: 'DELETE',
-        headers: {
-             // Cookies are typically sent automatically
-        },
+        headers: authHeaders,
     });
 
     // handleActionApiResponse handles non-OK status codes including 404 from delete
@@ -354,3 +366,4 @@ export async function deletePostAction(slug: string): Promise<{ success: boolean
     return { success: false, message: error.message || 'Failed to delete post.' };
   }
 }
+

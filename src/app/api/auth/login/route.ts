@@ -2,11 +2,12 @@
 // src/app/api/auth/login/route.ts
 import { NextResponse, type NextRequest } from 'next/server';
 import { cookies } from 'next/headers';
+import { SESSION_COOKIE_NAME } from '@/lib/constants'; // Import the constant
 
 // --- Configuration ---
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'admin@example.com';
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'password'; // Use environment variables in production!
-const SESSION_COOKIE_NAME = 'auth_session';
+// const SESSION_COOKIE_NAME = 'auth_session'; // Removed, using imported constant
 const SESSION_COOKIE_MAX_AGE = 60 * 60 * 24; // 1 day in seconds
 
 export async function POST(request: NextRequest) {
@@ -69,3 +70,4 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ message: 'An internal server error occurred during login.' }, { status: 500 });
   }
 }
+

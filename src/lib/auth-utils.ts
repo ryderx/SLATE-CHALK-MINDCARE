@@ -2,8 +2,9 @@
 // src/lib/auth-utils.ts
 import { cookies } from 'next/headers';
 import type { User } from './types';
+import { SESSION_COOKIE_NAME } from '@/lib/constants'; // Import the constant
 
-const SESSION_COOKIE_NAME = 'auth_session';
+// const SESSION_COOKIE_NAME = 'auth_session'; // Removed, using imported constant
 
 /**
  * Gets the current user session from the request cookies.
@@ -53,3 +54,4 @@ export async function isAdminSession(): Promise<boolean> {
   const user = getCurrentUserSession();
   return !!user?.isAdmin;
 }
+

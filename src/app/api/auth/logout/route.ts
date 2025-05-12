@@ -2,8 +2,9 @@
 // src/app/api/auth/logout/route.ts
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
+import { SESSION_COOKIE_NAME } from '@/lib/constants'; // Import the constant
 
-const SESSION_COOKIE_NAME = 'auth_session';
+// const SESSION_COOKIE_NAME = 'auth_session'; // Removed, using imported constant
 
 export async function POST() {
   try {
@@ -17,3 +18,4 @@ export async function POST() {
     return NextResponse.json({ message: 'An internal server error occurred during logout.' }, { status: 500 });
   }
 }
+

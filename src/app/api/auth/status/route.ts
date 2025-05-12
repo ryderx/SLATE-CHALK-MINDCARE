@@ -3,8 +3,9 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { cookies } from 'next/headers';
 import type { User } from '@/lib/types'; // Import the User type
+import { SESSION_COOKIE_NAME } from '@/lib/constants'; // Import the constant
 
-const SESSION_COOKIE_NAME = 'auth_session';
+// const SESSION_COOKIE_NAME = 'auth_session'; // Removed, using imported constant
 
 // Function to get user from cookie (reuse or place in a shared util if needed elsewhere)
 function getUserFromCookie(): User | null {
@@ -47,3 +48,4 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ loggedIn: false, user: null });
   }
 }
+
