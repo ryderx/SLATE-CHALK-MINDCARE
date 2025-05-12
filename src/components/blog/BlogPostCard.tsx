@@ -2,9 +2,10 @@
 import Link from 'next/link';
 import type { Post } from '@/lib/types';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import Image from 'next/image';
 import { ArrowRight } from 'lucide-react';
+import { cn } from '@/lib/utils'; // Import cn
+import { buttonVariants } from '@/components/ui/button'; // Import buttonVariants
 
 interface BlogPostCardProps {
   post: Post;
@@ -47,9 +48,16 @@ export function BlogPostCard({ post }: BlogPostCardProps) {
         <p className="text-foreground text-sm leading-relaxed line-clamp-3">{excerpt}</p> {/* Adjusted size and line-clamp */}
       </CardContent>
       <CardFooter className="pt-2 pb-4"> {/* Adjusted padding */}
-        <Button asChild variant="link" className="text-accent p-0 h-auto text-sm hover:text-accent/80">
-          <Link href={`/blog/${post.slug}`}>Read More <ArrowRight className="ml-1 h-4 w-4" /></Link> {/* Adjusted spacing */}
-        </Button>
+         {/* Style Link directly using buttonVariants */}
+        <Link
+          href={`/blog/${post.slug}`}
+          className={cn(
+            buttonVariants({ variant: "link" }),
+            "text-accent p-0 h-auto text-sm hover:text-accent/80 flex items-center" // Added flex items-center
+          )}
+        >
+          Read More <ArrowRight className="ml-1 h-4 w-4" /> {/* Adjusted spacing */}
+        </Link>
       </CardFooter>
     </Card>
   );
