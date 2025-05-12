@@ -38,29 +38,44 @@ function slugify(text: string): string {
     .replace(/--+/g, '-'); // Replace multiple - with single -
 }
 
+// Function to find the final unique slug, used in create and potentially update
+function findUniqueSlug(title: string, currentId?: string): string {
+    const baseSlug = slugify(title);
+    let finalSlug = baseSlug;
+    let counter = 1;
+    // Check against existing slugs, excluding the current post if updating
+    while (posts.some(p => p.slug === finalSlug && p.id !== currentId)) {
+        finalSlug = `${baseSlug}-${counter}`;
+        counter++;
+    }
+    return finalSlug;
+}
+
+
 export async function getPosts(): Promise<Post[]> {
-  // No simulated API delay
+  // Simulate API delay
+  // await new Promise(resolve => setTimeout(resolve, 50));
+  console.log('Current posts in store (getPosts):', posts.map(p => p.slug));
   return [...posts].sort((a,b) => b.createdAt.getTime() - a.createdAt.getTime());
 }
 
 export async function getPostBySlug(slug: string): Promise<Post | undefined> {
-   // No simulated API delay
-  return posts.find(post => post.slug === slug);
+   // Simulate API delay
+   // await new Promise(resolve => setTimeout(resolve, 50));
+  console.log(`Attempting to find post with slug: ${slug}`);
+  console.log('Available slugs:', posts.map(p => p.slug));
+  const foundPost = posts.find(post => post.slug === slug);
+  console.log(`Post found for slug ${slug}?`, !!foundPost);
+  return foundPost;
 }
 
 export async function createPost(data: PostFormData): Promise<Post> {
-   // No simulated API delay
-  const slug = slugify(data.title);
-  // Check if slug already exists, append number if it does
-  let finalSlug = slug;
-  let counter = 1;
-  while (posts.some(p => p.slug === finalSlug)) {
-    finalSlug = `${slug}-${counter}`;
-    counter++;
-  }
+   // Simulate API delay
+   // await new Promise(resolve => setTimeout(resolve, 50));
+  const finalSlug = findUniqueSlug(data.title); // Use helper to ensure uniqueness
 
   const newPost: Post = {
-    id: String(Date.now()), // Simple unique ID
+    id: String(Date.now() + Math.random()), // Simple unique ID, added random for more uniqueness
     slug: finalSlug,
     title: data.title,
     content: data.content,
@@ -68,55 +83,58 @@ export async function createPost(data: PostFormData): Promise<Post> {
     updatedAt: new Date(),
   };
   posts.push(newPost);
-  console.log('Post created:', newPost); // Added logging
-  console.log('Current posts array:', posts.map(p => p.slug)); // Added logging
+  console.log('Post created:', newPost.slug, newPost.id); // Added logging
+  console.log('Current posts array (slugs):', posts.map(p => p.slug)); // Added logging
   return newPost;
 }
 
 export async function updatePost(slug: string, data: PostFormData): Promise<Post | undefined> {
-  // No simulated API delay
+  // Simulate API delay
+  // await new Promise(resolve => setTimeout(resolve, 50));
   const postIndex = posts.findIndex(post => post.slug === slug);
   if (postIndex === -1) {
+    console.error(`Update failed: Post with slug ${slug} not found.`);
     return undefined;
   }
 
   const originalPost = posts[postIndex];
   let newSlug = originalPost.slug;
 
-  // If title changes, slug might need to change
+  // If title changes, generate and check new slug
   if (originalPost.title !== data.title) {
-    const potentialNewSlug = slugify(data.title);
-    // Check if new slug conflicts with another post (excluding the current one)
-    if (!posts.some(p => p.slug === potentialNewSlug && p.id !== originalPost.id)) {
-        newSlug = potentialNewSlug;
-    } else {
-        // Handle conflict if necessary, or disallow title change that causes conflict
-        // For simplicity, we might just keep old slug or append number if new slug already taken
-        let counter = 1;
-        let tempSlug = potentialNewSlug;
-        while(posts.some(p => p.slug === tempSlug && p.id !== originalPost.id)) {
-            tempSlug = `${potentialNewSlug}-${counter}`;
-            counter++;
-        }
-        newSlug = tempSlug;
-    }
+      newSlug = findUniqueSlug(data.title, originalPost.id); // Use helper, excluding self
   }
-
 
   const updatedPost: Post = {
     ...originalPost,
     title: data.title,
     content: data.content,
-    slug: newSlug,
+    slug: newSlug, // Use the determined unique slug
     updatedAt: new Date(),
   };
   posts[postIndex] = updatedPost;
+  console.log(`Post updated: old slug ${slug}, new slug ${newSlug}, id ${updatedPost.id}`);
+  console.log('Current posts array (slugs):', posts.map(p => p.slug));
   return updatedPost;
 }
 
 export async function deletePost(slug: string): Promise<boolean> {
-  // No simulated API delay
+  // Simulate API delay
+  // await new Promise(resolve => setTimeout(resolve, 50));
   const initialLength = posts.length;
+  const postToDelete = posts.find(p => p.slug === slug);
+  if (postToDelete) {
+      console.log(`Deleting post with slug: ${slug}, id: ${postToDelete.id}`);
+  } else {
+       console.log(`Attempted to delete non-existent post with slug: ${slug}`);
+  }
   posts = posts.filter(post => post.slug !== slug);
-  return posts.length < initialLength;
+  const deleted = posts.length < initialLength;
+  if(deleted) {
+      console.log(`Post ${slug} deleted successfully.`);
+      console.log('Remaining posts (slugs):', posts.map(p => p.slug));
+  } else {
+       console.log(`Failed to delete post ${slug}. It might not have existed.`);
+  }
+  return deleted;
 }

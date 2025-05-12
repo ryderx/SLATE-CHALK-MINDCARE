@@ -1,8 +1,8 @@
 'use client';
 
 import type { Post } from '@/lib/types';
-import { useActionState, useEffect } from 'react'; // Changed from react-dom and useFormState
-import { useRouter } from 'next/navigation';
+import { useActionState, useEffect } from 'react';
+import { useRouter } from 'next/navigation'; // Keep useRouter for potential refresh if needed, though redirect might handle it
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -22,47 +22,31 @@ const initialFormState: FormState = {
 };
 
 export function BlogPostForm({ post, action, submitButtonText = 'Submit' }: BlogPostFormProps) {
-  const [state, formAction] = useActionState(action, initialFormState); // Changed from useFormState
-  const router = useRouter();
+  const [state, formAction] = useActionState(action, initialFormState);
   const { toast } = useToast();
+  // const router = useRouter(); // Keep router if you need router.refresh() for other reasons, but navigation is handled by redirect
 
   useEffect(() => {
-    if (state.success) {
-      toast({
-        title: "Success!",
-        description: state.message,
-        variant: "default",
-      });
-      // Explicitly cast state to include newSlug for type safety
-      const newSlug = (state as FormState & { newSlug?: string }).newSlug;
-
-      // Perform refresh first to potentially update data cache
-      router.refresh();
-
-      // Add a small delay before navigating to allow revalidation/refresh to potentially complete
-      // This is helpful for in-memory stores where timing can be tight.
-      const navigationTimeout = setTimeout(() => {
-        if (newSlug) {
-          // Redirect to the newly created/updated post using its slug
-          router.push(`/blog/${newSlug}`);
-        } else if (post) { // Fallback for update if slug didn't change
-          router.push(`/blog/${post.slug}`);
-        } else { // Fallback if no slug is available
-          router.push('/blog');
+    // Only handle toast messages here. Navigation is handled by redirect in server action.
+    // Note: The success message might only flash briefly before the redirect occurs.
+    // Consider if you want to show the success toast on the *next* page after redirect instead.
+    if (state.message) {
+        if (state.success) {
+             toast({
+               title: "Processing...", // Or a generic success message that makes sense before redirect
+               description: state.message,
+               variant: "default",
+             });
+        } else if (!state.success && (state.errors || state.message.startsWith('Failed') || state.message.startsWith('Unauthorized') || state.message.startsWith('Validation failed'))) {
+             toast({
+               title: "Error",
+               description: state.message + (state.errors?.general ? ` ${state.errors.general.join(', ')}` : ''),
+               variant: "destructive",
+             });
         }
-      }, 150); // Increased delay slightly
-
-      // Cleanup timeout if component unmounts
-      return () => clearTimeout(navigationTimeout);
-
-    } else if (state.message && !state.success && (state.errors || state.message.startsWith('Failed') || state.message.startsWith('Unauthorized'))) { // Show error toast if there are errors or a general failure message
-      toast({
-        title: "Error",
-        description: state.message + (state.errors?.general ? ` ${state.errors.general.join(', ')}` : ''),
-        variant: "destructive",
-      });
     }
-  }, [state, router, toast, post]);
+  }, [state, toast]);
+
 
   return (
     <form action={formAction} className="space-y-6">
@@ -106,11 +90,11 @@ export function BlogPostForm({ post, action, submitButtonText = 'Submit' }: Blog
           </p>
         )}
       {/* Display general error message if not success and no specific field errors */}
-      {state.message && !state.success && !state.errors && (
+      {/* {state.message && !state.success && !state.errors && ( // Simplified condition in useEffect handles this
          <p className="text-sm text-destructive mt-1">
             {state.message}
           </p>
-      )}
+      )} */}
       <Button type="submit" className="bg-accent hover:bg-accent/90 text-accent-foreground" size="lg">
         {submitButtonText}
       </Button>
