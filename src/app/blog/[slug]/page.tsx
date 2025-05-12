@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { DeletePostButton } from '@/components/blog/DeletePostButton';
 import { Pencil, CalendarDays } from 'lucide-react';
 import Image from 'next/image';
+import { isAdmin } from '@/lib/auth'; // Import admin check
 
 export const dynamic = 'force-dynamic';
 
@@ -25,6 +26,7 @@ export async function generateMetadata({ params }: BlogPostPageProps) {
 
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const post = await getPostBySlug(params.slug);
+  const userIsAdmin = await isAdmin(); // Check if the user is an admin
 
   if (!post) {
     notFound();
@@ -45,8 +47,8 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         </div>
 
         <div className="relative h-72 md:h-96 w-full mb-10 rounded-lg overflow-hidden shadow-lg">
-          <Image 
-            src={`https://picsum.photos/seed/${post.slug}/1200/600`} 
+          <Image
+            src={`https://picsum.photos/seed/${post.slug}/1200/600`}
             alt={post.title}
             layout="fill"
             objectFit="cover"
@@ -54,21 +56,24 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             priority
           />
         </div>
-        
+
         {/* Split content into paragraphs for basic styling, assuming plain text */}
         {post.content.split('\n').map((paragraph, index) => (
           paragraph.trim() && <p key={index} className="mb-4 text-lg leading-relaxed">{paragraph}</p>
         ))}
       </article>
 
-      <div className="mt-12 pt-8 border-t flex flex-col sm:flex-row justify-end space-y-4 sm:space-y-0 sm:space-x-4">
-        <Button asChild variant="outline">
-          <Link href={`/blog/${post.slug}/edit`}>
-            <Pencil className="mr-2 h-4 w-4" /> Edit Post
-          </Link>
-        </Button>
-        <DeletePostButton slug={post.slug} postTitle={post.title} />
-      </div>
+      {/* Conditionally render admin actions */}
+      {userIsAdmin && (
+        <div className="mt-12 pt-8 border-t flex flex-col sm:flex-row justify-end space-y-4 sm:space-y-0 sm:space-x-4">
+          <Button asChild variant="outline">
+            <Link href={`/blog/${post.slug}/edit`}>
+              <Pencil className="mr-2 h-4 w-4" /> Edit Post
+            </Link>
+          </Button>
+          <DeletePostButton slug={post.slug} postTitle={post.title} />
+        </div>
+      )}
     </div>
   );
 }

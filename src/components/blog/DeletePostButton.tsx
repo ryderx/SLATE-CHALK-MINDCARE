@@ -16,6 +16,7 @@ import {
 import { useTransition } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { Trash2 } from 'lucide-react';
+import { useRouter } from 'next/navigation'; // Import useRouter for redirection
 
 interface DeletePostButtonProps {
   slug: string;
@@ -25,20 +26,23 @@ interface DeletePostButtonProps {
 export function DeletePostButton({ slug, postTitle }: DeletePostButtonProps) {
   const [isPending, startTransition] = useTransition();
   const { toast } = useToast();
+  const router = useRouter(); // Get router instance
 
   const handleDelete = async () => {
     startTransition(async () => {
-      try {
-        await deletePostAction(slug);
+      const result = await deletePostAction(slug); // Call the action
+
+      if (result.success) {
         toast({
           title: 'Post Deleted',
           description: `The post "${postTitle}" has been successfully deleted.`,
         });
-        // Redirect is handled by server action
-      } catch (error) {
+        router.push('/blog'); // Redirect to blog index on success
+        router.refresh(); // Refresh server components
+      } else {
         toast({
           title: 'Error Deleting Post',
-          description: 'There was an issue deleting the post. Please try again.',
+          description: result.message || 'There was an issue deleting the post. Please try again.',
           variant: 'destructive',
         });
       }
@@ -61,7 +65,7 @@ export function DeletePostButton({ slug, postTitle }: DeletePostButtonProps) {
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogCancel disabled={isPending}>Cancel</AlertDialogCancel>
           <AlertDialogAction onClick={handleDelete} disabled={isPending} className="bg-destructive hover:bg-destructive/90 text-destructive-foreground">
             {isPending ? 'Deleting...' : 'Yes, delete post'}
           </AlertDialogAction>

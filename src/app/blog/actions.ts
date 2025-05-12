@@ -3,8 +3,9 @@
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { z } from 'zod';
-import { createPost as dbCreatePost, updatePost as dbUpdatePost, deletePost as dbDeletePost, getPostBySlug } from '@/lib/blog-data';
+import { createPost as dbCreatePost, updatePost as dbUpdatePost, deletePost as dbDeletePost } from '@/lib/blog-data';
 import type { PostFormData } from '@/lib/types';
+import { getCurrentUser } from '@/lib/auth'; // Import auth check
 
 const postSchema = z.object({
   title: z.string().min(3, { message: 'Title must be at least 3 characters long.' }).max(100, { message: 'Title cannot exceed 100 characters.' }),
@@ -19,9 +20,23 @@ export type FormState = {
     general?: string[];
   };
   success: boolean;
+  newSlug?: string; // Keep track of potential new slug for redirects
+}
+
+async function checkAdmin(): Promise<void> {
+  const user = await getCurrentUser();
+  if (!user?.isAdmin) {
+    throw new Error('Unauthorized: Admin privileges required.');
+  }
 }
 
 export async function createPost(prevState: FormState, formData: FormData): Promise<FormState> {
+  try {
+    await checkAdmin(); // Check for admin privileges first
+  } catch (error: any) {
+    return { message: error.message || 'Authentication failed.', success: false, errors: { general: ['Unauthorized access.'] } };
+  }
+
   const validatedFields = postSchema.safeParse({
     title: formData.get('title'),
     content: formData.get('content'),
@@ -39,16 +54,20 @@ export async function createPost(prevState: FormState, formData: FormData): Prom
     const newPost = await dbCreatePost(validatedFields.data);
     revalidatePath('/blog');
     revalidatePath(`/blog/${newPost.slug}`);
-    // Redirecting from server action is tricky with useFormState.
-    // It's better to handle redirect on client based on success state.
-    // For now, will return success and new slug.
-    return { message: `Post "${newPost.title}" created successfully!`, success: true, newSlug: newPost.slug } as FormState & {newSlug: string};
+    return { message: `Post "${newPost.title}" created successfully!`, success: true, newSlug: newPost.slug };
   } catch (error) {
+    console.error("Create post action failed:", error);
     return { message: 'Failed to create post.', success: false, errors: { general: ['An unexpected error occurred.'] } };
   }
 }
 
 export async function updatePost(slug: string, prevState: FormState, formData: FormData): Promise<FormState> {
+ try {
+    await checkAdmin(); // Check for admin privileges first
+  } catch (error: any) {
+    return { message: error.message || 'Authentication failed.', success: false, errors: { general: ['Unauthorized access.'] } };
+  }
+
   const validatedFields = postSchema.safeParse({
     title: formData.get('title'),
     content: formData.get('content'),
@@ -65,29 +84,38 @@ export async function updatePost(slug: string, prevState: FormState, formData: F
   try {
     const updatedPost = await dbUpdatePost(slug, validatedFields.data);
     if (!updatedPost) {
-      return { message: 'Post not found or failed to update.', success: false };
+      return { message: 'Post not found or failed to update.', success: false, errors: { general: ['Could not find the post to update.'] } };
     }
     revalidatePath('/blog');
     revalidatePath(`/blog/${slug}`); // old slug
     revalidatePath(`/blog/${updatedPost.slug}`); // new slug if changed
-    return { message: `Post "${updatedPost.title}" updated successfully!`, success: true, newSlug: updatedPost.slug } as FormState & {newSlug: string};
+    return { message: `Post "${updatedPost.title}" updated successfully!`, success: true, newSlug: updatedPost.slug };
   } catch (error) {
+    console.error("Update post action failed:", error);
     return { message: 'Failed to update post.', success: false, errors: { general: ['An unexpected error occurred.'] } };
   }
 }
 
-export async function deletePostAction(slug: string) {
+export async function deletePostAction(slug: string): Promise<{ success: boolean; message: string }> {
+  try {
+    await checkAdmin(); // Check for admin privileges first
+  } catch (error: any) {
+     console.error("Authorization failed:", error);
+     // Don't redirect here, let the component handle the error message
+     return { success: false, message: error.message || 'Unauthorized access.' };
+  }
+
   try {
     const success = await dbDeletePost(slug);
     if (!success) {
       throw new Error('Failed to delete post or post not found.');
     }
     revalidatePath('/blog');
-  } catch (error) {
+     // Redirect happens on the client-side via hook after success
+    return { success: true, message: 'Post deleted successfully.' };
+  } catch (error: any) {
     console.error("Delete post action failed:", error);
-    // Here you might want to return an error state to the client
-    // For now, we'll let it throw and be caught by an error boundary or just log
-    throw error; // Re-throw to be handled by caller or error boundary
+    return { success: false, message: error.message || 'Failed to delete post.' };
   }
-  redirect('/blog');
+  // Note: redirect('/blog') is removed here. It will be handled client-side based on the return value.
 }
