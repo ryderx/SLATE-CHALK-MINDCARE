@@ -1,4 +1,3 @@
-
 // src/components/layout/Header.tsx
 import Link from 'next/link';
 import { NavLink } from './NavLink';
@@ -38,7 +37,7 @@ export async function Header() {
         </Link>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center space-x-6">
+        <nav className="hidden md:flex items-center space-x-4"> {/* Reduced space-x-6 to space-x-4 */}
           {navItems.map((item) => (
             <NavLink key={item.href} href={item.href}>
               {item.label}
@@ -46,7 +45,7 @@ export async function Header() {
           ))}
            {/* Conditionally show Admin links for admins */}
            {isAdmin && (
-             <div className="flex items-center space-x-4 border-l pl-4 ml-4 border-border">
+             <div className="flex items-center space-x-3 border-l pl-4 ml-4 border-border"> {/* Reduced space-x-4 to space-x-3 */}
                 <span className="text-sm font-semibold text-muted-foreground">Admin:</span>
                 {adminNavItems.slice(0,2).map(item => ( // Show first two admin links directly
                      <NavLink key={item.href} href={item.href} activeClassName="text-accent font-semibold border-b-2 border-accent">

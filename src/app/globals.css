@@ -103,3 +103,7 @@ h1, h2, h3, h4, h5, h6 {
     @apply px-4 md:px-6; /* Consistent container padding */
   }
 }
+
+.main-nav-link {
+  font-size: 1rem; /* Adjust as needed */
+}
