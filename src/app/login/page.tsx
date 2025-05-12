@@ -22,6 +22,7 @@ export default function LoginPage() {
     event.preventDefault();
     setError(null);
     setIsLoading(true);
+    console.log('[Login Page] Attempting login for:', email); // Client-side log
 
     try {
       const response = await fetch('/api/auth/login', {
@@ -31,21 +32,26 @@ export default function LoginPage() {
       });
 
       const data = await response.json();
+      console.log('[Login Page] API Response Status:', response.status); // Log status
+      console.log('[Login Page] API Response Data:', data); // Log response data
 
       if (!response.ok) {
-        throw new Error(data.message || 'Login failed');
+        throw new Error(data.message || `Login failed with status ${response.status}`);
       }
 
       // Login successful
-      console.log('Login successful:', data);
+      console.log('[Login Page] Login successful via API:', data);
       // Redirect to homepage or admin dashboard after successful login
       // We might need to refresh the page or parts of it to reflect the logged-in state
       router.push('/'); // Redirect to home first
+      // Wait briefly for navigation before refresh? Usually not needed, but can try if state isn't updating
+      // await new Promise(resolve => setTimeout(resolve, 100));
       router.refresh(); // Force refresh of Server Components to pick up new cookie state
+      console.log('[Login Page] Redirecting and refreshing...');
 
     } catch (err: any) {
+      console.error('[Login Page] Login fetch/processing error:', err); // Log the actual error
       setError(err.message || 'An unexpected error occurred.');
-      console.error('Login error:', err);
     } finally {
       setIsLoading(false);
     }
