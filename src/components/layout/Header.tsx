@@ -4,9 +4,9 @@ import Link from 'next/link';
 import { NavLink } from './NavLink';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { Menu, LogIn, LogOut, Settings, PlusCircle } from 'lucide-react'; // Added Settings and PlusCircle icons
-import { getCurrentUserSession } from '@/lib/auth-utils'; // Import server-side session check
-import { LogoutButton } from './LogoutButton'; // Import client component for logout
+import { Menu, LogIn, LogOut, Settings, PlusCircle, MessageSquareQuote, List } from 'lucide-react'; // Added Testimonial icons
+import { getCurrentUserSession } from '@/lib/auth-utils';
+import { LogoutButton } from './LogoutButton';
 
 const navItems = [
   { href: '/', label: 'Home' },
@@ -16,6 +16,13 @@ const navItems = [
   { href: '/testimonials', label: 'Testimonials' },
   { href: '/contact', label: 'Contact Us' },
 ];
+
+const adminNavItems = [
+    { href: '/admin/posts', label: 'Manage Posts', icon: List },
+    { href: '/blog/new', label: 'Create Post', icon: PlusCircle },
+    { href: '/admin/testimonials', label: 'Manage Testimonials', icon: List },
+    { href: '/admin/testimonials/new', label: 'Add Testimonial', icon: MessageSquareQuote },
+]
 
 export async function Header() {
   // Fetch user session server-side
@@ -39,14 +46,18 @@ export async function Header() {
           ))}
            {/* Conditionally show Admin links for admins */}
            {isAdmin && (
-             <>
-                <NavLink href="/admin/posts" activeClassName="text-accent font-semibold border-b-2 border-accent">
-                   Manage Posts
-                </NavLink>
-                <NavLink href="/blog/new" activeClassName="text-accent font-semibold border-b-2 border-accent">
-                   Create Post
-                </NavLink>
-             </>
+             <div className="flex items-center space-x-4 border-l pl-4 ml-4 border-border">
+                <span className="text-sm font-semibold text-muted-foreground">Admin:</span>
+                {adminNavItems.slice(0,2).map(item => ( // Show first two admin links directly
+                     <NavLink key={item.href} href={item.href} activeClassName="text-accent font-semibold border-b-2 border-accent">
+                         <item.icon className="mr-1 h-4 w-4 inline-block" /> {item.label}
+                     </NavLink>
+                 ))}
+                 {/* Add dropdown or separate page for more admin links if needed */}
+                 <NavLink href="/admin/testimonials" activeClassName="text-accent font-semibold border-b-2 border-accent">
+                     <List className="mr-1 h-4 w-4 inline-block" /> Manage Testimonials
+                 </NavLink>
+             </div>
             )}
         </nav>
 
@@ -89,7 +100,6 @@ export async function Header() {
                   SLATE & CHALK <span className="font-light">MINDCARE</span>
                 </Link>
                 {navItems.map((item) => (
-                  // Wrap NavLink in SheetClose for mobile menu items
                    <SheetTrigger key={item.href} asChild>
                        <NavLink href={item.href} className="text-lg text-left justify-start w-full px-2 py-1">
                            {item.label}
@@ -99,16 +109,16 @@ export async function Header() {
                  {/* Conditionally show Admin links for admins in mobile */}
                  {isAdmin && (
                    <>
-                     <SheetTrigger asChild>
-                         <NavLink href="/admin/posts" className="text-lg text-left justify-start w-full px-2 py-1 text-accent">
-                            <Settings className="mr-2 h-4 w-4" /> Manage Posts
-                         </NavLink>
-                    </SheetTrigger>
-                     <SheetTrigger asChild>
-                         <NavLink href="/blog/new" className="text-lg text-left justify-start w-full px-2 py-1 text-accent">
-                            <PlusCircle className="mr-2 h-4 w-4" /> Create Post
-                         </NavLink>
-                    </SheetTrigger>
+                    <div className="border-t pt-4 mt-4">
+                        <span className="text-sm font-semibold text-muted-foreground px-2">Admin Menu</span>
+                        {adminNavItems.map(item => (
+                            <SheetTrigger key={item.href} asChild>
+                                <NavLink href={item.href} className="text-lg text-left justify-start w-full px-2 py-1 text-accent">
+                                    <item.icon className="mr-2 h-4 w-4" /> {item.label}
+                                </NavLink>
+                            </SheetTrigger>
+                        ))}
+                    </div>
                    </>
                  )}
               </div>

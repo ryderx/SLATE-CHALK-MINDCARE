@@ -1,76 +1,97 @@
+
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Star, UserCircle } from "lucide-react";
+import { Star, UserCircle, Pencil, Trash2, PlusCircle } from "lucide-react";
 import Image from "next/image";
+import { getTestimonials } from "@/lib/testimonials-data"; // Fetch data dynamically
+import { isAdminSession } from "@/lib/auth-utils"; // Check admin status
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { DeleteTestimonialButton } from "@/components/testimonials/DeleteTestimonialButton"; // Import delete button
 
-const testimonials = [
-  {
-    quote: "Slate & Chalk MindCare transformed my perspective on life. Their compassionate approach made all the difference.",
-    name: "A. N.",
-    stars: 5,
-    imageHint: "happy person",
-  },
-  {
-    quote: "I felt truly heard and understood. The therapists are incredibly skilled and supportive. Highly recommend!",
-    name: "J. B.",
-    stars: 5,
-    imageHint: "thoughtful individual",
-  },
-  {
-    quote: "The couples counseling sessions helped us rebuild our communication and strengthen our bond. We are so grateful.",
-    name: "M. & K. S.",
-    stars: 5,
-    imageHint: "content couple",
-  },
-  {
-    quote: "A safe and professional environment. I've learned so much about myself and developed effective coping strategies.",
-    name: "L. P.",
-    stars: 4,
-    imageHint: "calm nature",
-  },
-];
+// Make the page dynamic to fetch fresh data and check auth status on each request
+export const dynamic = 'force-dynamic';
 
-export default function TestimonialsPage() {
+export default async function TestimonialsPage() {
+  const testimonials = await getTestimonials();
+  const userIsAdmin = await isAdminSession();
+
   return (
     <div className="container mx-auto py-12 md:py-20">
       <section className="text-center mb-16">
-        <h1 className="text-5xl font-bold text-primary mb-4">What Our Clients Say</h1>
+        <div className="flex justify-center items-center mb-4 relative">
+             <h1 className="text-5xl font-bold text-primary">What Our Clients Say</h1>
+             {/* Admin Add Button */}
+            {userIsAdmin && (
+                 <Button asChild size="sm" className="absolute right-0 top-1/2 -translate-y-1/2 bg-accent hover:bg-accent/90 text-accent-foreground ml-4">
+                   <Link href="/admin/testimonials/new">
+                     <PlusCircle className="mr-2 h-4 w-4" /> Add New
+                   </Link>
+                 </Button>
+            )}
+        </div>
         <p className="text-xl text-foreground max-w-2xl mx-auto">
           Hear from individuals who have experienced positive change and growth through our services.
         </p>
       </section>
 
-      <div className="grid md:grid-cols-2 gap-8">
-        {testimonials.map((testimonial, index) => (
-          <Card key={index} className="flex flex-col shadow-xl hover:shadow-2xl transition-shadow">
-            <CardHeader className="pb-4">
-               <div className="flex items-center mb-2">
-                {[...Array(5)].map((_, i) => (
-                  <Star
-                    key={i}
-                    className={`h-6 w-6 ${i < testimonial.stars ? 'text-yellow-400 fill-yellow-400' : 'text-muted-foreground'}`}
-                  />
-                ))}
-              </div>
-              <CardTitle className="text-2xl font-normal text-foreground leading-relaxed italic">
-                "{testimonial.quote}"
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="flex-grow">
-              {/* Optional: Image related to testimonial theme */}
-              {/* <Image src={`https://picsum.photos/seed/testimonial${index}/400/200`} alt={testimonial.imageHint} width={400} height={200} className="rounded-md mt-4" data-ai-hint={testimonial.imageHint} /> */}
-            </CardContent>
-            <CardFooter className="mt-auto pt-4 border-t">
-              <div className="flex items-center">
-                <UserCircle className="h-10 w-10 text-primary mr-3" />
-                <div>
-                  <p className="font-semibold text-primary text-lg">{testimonial.name}</p>
-                  <p className="text-sm text-muted-foreground">Valued Client</p>
-                </div>
-              </div>
-            </CardFooter>
-          </Card>
-        ))}
-      </div>
+      {testimonials.length === 0 ? (
+         <p className="text-lg text-foreground text-center py-10">No testimonials yet. Check back soon!</p>
+      ) : (
+          <div className="grid md:grid-cols-2 gap-8">
+            {testimonials.map((testimonial) => (
+              <Card key={testimonial.id} className="flex flex-col shadow-xl hover:shadow-2xl transition-shadow relative group"> {/* Added group for hover effects */}
+                 {/* Admin Edit/Delete Buttons */}
+                {userIsAdmin && (
+                    <div className="absolute top-3 right-3 flex space-x-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                         <Button asChild variant="outline" size="sm">
+                            <Link href={`/admin/testimonials/${testimonial.id}/edit`} title="Edit Testimonial">
+                                <Pencil className="h-4 w-4" />
+                                <span className="sr-only">Edit</span>
+                            </Link>
+                         </Button>
+                         <DeleteTestimonialButton testimonialId={testimonial.id} testimonialName={testimonial.name}/>
+                    </div>
+                )}
+
+                <CardHeader className="pb-4">
+                   <div className="flex items-center mb-2">
+                    {[...Array(5)].map((_, i) => (
+                      <Star
+                        key={i}
+                        className={`h-6 w-6 ${i < testimonial.stars ? 'text-yellow-400 fill-yellow-400' : 'text-muted-foreground'}`}
+                      />
+                    ))}
+                  </div>
+                  <CardTitle className="text-2xl font-normal text-foreground leading-relaxed italic">
+                    "{testimonial.quote}"
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="flex-grow">
+                   {/* Use placeholder image with hint */}
+                   <Image
+                      src={`https://picsum.photos/seed/testimonial-${testimonial.id}/${testimonial.imageHint ? testimonial.imageHint.replace(/\s+/g, '-') : 'abstract'}/400/200`}
+                      alt={testimonial.imageHint || 'Abstract background related to testimonial'}
+                      width={400}
+                      height={200}
+                      className="rounded-md mt-4 w-full h-auto object-cover"
+                      data-ai-hint={testimonial.imageHint || "abstract pattern"}
+                    />
+                </CardContent>
+                <CardFooter className="mt-auto pt-4 border-t">
+                  <div className="flex items-center">
+                    {/* Use a generic icon or a placeholder user image */}
+                    <UserCircle className="h-10 w-10 text-primary mr-3" />
+                    <div>
+                      <p className="font-semibold text-primary text-lg">{testimonial.name}</p>
+                      <p className="text-sm text-muted-foreground">Valued Client</p>
+                    </div>
+                  </div>
+                </CardFooter>
+              </Card>
+            ))}
+          </div>
+      )}
     </div>
   );
 }
+
