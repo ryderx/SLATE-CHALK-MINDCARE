@@ -41,13 +41,11 @@ export default function LoginPage() {
 
       // Login successful
       console.log('[Login Page] Login successful via API:', data);
-      // Redirect to homepage or admin dashboard after successful login
-      // We might need to refresh the page or parts of it to reflect the logged-in state
-      router.push('/'); // Redirect to home first
-      // Wait briefly for navigation before refresh? Usually not needed, but can try if state isn't updating
-      // await new Promise(resolve => setTimeout(resolve, 100));
+      // Redirect to the blog page where admin controls are visible
+      router.push('/blog'); // Redirect to blog page
+      // await new Promise(resolve => setTimeout(resolve, 100)); // Usually not needed
       router.refresh(); // Force refresh of Server Components to pick up new cookie state
-      console.log('[Login Page] Redirecting and refreshing...');
+      console.log('[Login Page] Redirecting to /blog and refreshing...');
 
     } catch (err: any) {
       console.error('[Login Page] Login fetch/processing error:', err); // Log the actual error
