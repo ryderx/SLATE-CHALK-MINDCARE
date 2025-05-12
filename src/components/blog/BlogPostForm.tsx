@@ -52,7 +52,7 @@ export function BlogPostForm({ post, action, submitButtonText = 'Submit' }: Blog
 
 
   return (
-    <form action={formAction} className="space-y-6" encType="multipart/form-data" id="blog-post-form">
+    <form action={formAction} className="space-y-6" id="blog-post-form"> {/* Removed encType */}
       {/* Display general error message at the top */}
        {state.message && !state.success && !state.errors?.title && !state.errors?.content && !state.errors?.image && (
         <p className="text-sm text-destructive mt-1">{state.message}</p>
