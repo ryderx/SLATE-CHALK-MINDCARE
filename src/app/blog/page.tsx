@@ -8,6 +8,8 @@ import { isAdminSession } from '@/lib/auth-utils'; // Use server-side session ch
 
 // export const dynamic = 'force-dynamic'; // Reconsider if needed - getPosts fetches with no-store
 // Revalidation might be better handled by actions triggering revalidatePath
+// Using 'force-dynamic' to ensure admin status is checked on each request
+export const dynamic = 'force-dynamic';
 
 export default async function BlogPage() {
   // Fetch posts using the updated function that calls the API
@@ -21,7 +23,8 @@ export default async function BlogPage() {
     <div className="container mx-auto py-12 md:py-20">
       <div className="flex justify-between items-center mb-12">
         <h1 className="text-5xl font-bold text-primary">Our Blog</h1>
-        {userIsAdmin && ( // Only show the button if the user is an admin based on session
+        {/* Rigorously check isAdminSession result before rendering */}
+        {userIsAdmin === true && ( // Explicit check for true
           <Button asChild className="bg-accent hover:bg-accent/90 text-accent-foreground">
             <Link href="/blog/new">
               <PlusCircle className="mr-2 h-5 w-5" />

@@ -8,13 +8,10 @@ import { Pencil, CalendarDays } from 'lucide-react';
 import Image from 'next/image';
 import { isAdminSession } from '@/lib/auth-utils'; // Use server-side session check
 
-// export const dynamic = 'force-dynamic'; // Reconsider - fetching with no-store
-
 interface BlogPostPageProps {
   params: { slug: string };
 }
 
-// Moved generateMetadata outside the component function
 export async function generateMetadata({ params }: BlogPostPageProps) {
   const post = await getPostBySlug(params.slug);
   if (!post) {
@@ -26,6 +23,7 @@ export async function generateMetadata({ params }: BlogPostPageProps) {
   };
 }
 
+
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
   console.log(`[Blog Post Page] Fetching post for slug: ${params.slug}`);
   const post = await getPostBySlug(params.slug);
@@ -33,11 +31,16 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const userIsAdmin = await isAdminSession();
 
   if (!post) {
-    console.error(`[Blog Post Page] Post not found for slug: ${params.slug}`);
+    console.error(`[Blog Post Page] Post not found for slug: ${params.slug}`); // Logging
     notFound(); // Trigger the not-found component
   }
 
-  console.log(`[Blog Post Page] Post found for slug ${params.slug}: ${post.title}. Admin: ${userIsAdmin}`);
+  console.log(`[Blog Post Page] Post found for slug ${params.slug}: ${post.title}. Admin: ${userIsAdmin}. Image URL: ${post.imageUrl}`);
+
+  // Determine image source: uploaded image or placeholder
+  const imageSrc = post.imageUrl || `https://picsum.photos/seed/${post.slug}/1200/600`;
+  const imageAlt = post.imageUrl ? post.title : `Placeholder image for ${post.title}`;
+  const aiHint = post.imageUrl ? undefined : "doodle background"; // Only add hint for placeholders
 
   return (
     <div className="container mx-auto py-12 md:py-20 max-w-4xl">
@@ -59,22 +62,22 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           </div>
         </div>
 
-        {/* Placeholder Image */}
+        {/* Display Image: Uploaded or Placeholder */}
          <div className="relative h-72 md:h-96 w-full mb-10 rounded-lg overflow-hidden shadow-lg">
              <Image
-               // Use a consistent seed for the image, maybe based on slug
-               src={`https://picsum.photos/seed/${post.slug}/1200/600`}
-               alt={`Image for ${post.title}`}
-               fill // Changed from layout="fill"
-               style={{ objectFit: 'cover' }} // Use style prop for objectFit with fill
-               data-ai-hint="doodle background" // Keep AI hint if useful
+               src={imageSrc}
+               alt={imageAlt}
+               fill // Use fill for responsive sizing
+               style={{ objectFit: 'cover' }} // Ensure image covers the area
+               data-ai-hint={aiHint} // Add hint only if it's a placeholder
                priority // Keep priority for LCP
+               // Add unoptimized prop if using external URLs that Next.js can't optimize by default
+               // unoptimized={!!post.imageUrl} // Example: disable optimization for uploaded images if needed
              />
         </div>
 
 
-        {/* Render content - Improve basic paragraph splitting */}
-        {/* Consider using a Markdown parser here if content is Markdown */}
+        {/* Render content */}
         <div className="text-lg leading-relaxed space-y-4">
           {post.content.split('\n').map((paragraph, index) =>
             paragraph.trim() ? <p key={index}>{paragraph}</p> : null

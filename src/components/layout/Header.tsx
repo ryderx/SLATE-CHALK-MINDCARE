@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { NavLink } from './NavLink';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { Menu, LogIn, LogOut } from 'lucide-react';
+import { Menu, LogIn, LogOut, Settings } from 'lucide-react'; // Added Settings icon
 import { getCurrentUserSession } from '@/lib/auth-utils'; // Import server-side session check
 import { LogoutButton } from './LogoutButton'; // Import client component for logout
 
@@ -37,11 +37,16 @@ export async function Header() {
               {item.label}
             </NavLink>
           ))}
-           {/* Conditionally show Create Post link for admins */}
+           {/* Conditionally show Admin links for admins */}
            {isAdmin && (
-              <NavLink href="/blog/new" activeClassName="text-accent font-semibold border-b-2 border-accent">
-                 Create Post
-              </NavLink>
+             <>
+                <NavLink href="/admin/posts" activeClassName="text-accent font-semibold border-b-2 border-accent">
+                   Manage Posts
+                </NavLink>
+                <NavLink href="/blog/new" activeClassName="text-accent font-semibold border-b-2 border-accent">
+                   Create Post
+                </NavLink>
+             </>
             )}
         </nav>
 
@@ -91,13 +96,20 @@ export async function Header() {
                        </NavLink>
                    </SheetTrigger>
                 ))}
-                 {/* Conditionally show Create Post link for admins in mobile */}
+                 {/* Conditionally show Admin links for admins in mobile */}
                  {isAdmin && (
+                   <>
                      <SheetTrigger asChild>
-                         <NavLink href="/blog/new" className="text-lg text-left justify-start w-full px-2 py-1 text-accent">
-                            Create Post
+                         <NavLink href="/admin/posts" className="text-lg text-left justify-start w-full px-2 py-1 text-accent">
+                            <Settings className="mr-2 h-4 w-4" /> Manage Posts
                          </NavLink>
                     </SheetTrigger>
+                     <SheetTrigger asChild>
+                         <NavLink href="/blog/new" className="text-lg text-left justify-start w-full px-2 py-1 text-accent">
+                            <PlusCircle className="mr-2 h-4 w-4" /> Create Post
+                         </NavLink>
+                    </SheetTrigger>
+                   </>
                  )}
               </div>
             </SheetContent>
