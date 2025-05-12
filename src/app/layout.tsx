@@ -30,8 +30,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${montserrat.variable}`}> {/* Removed playfair.variable */}
-      <body>
+    <html lang="en" className={`${montserrat.variable}`}><body> {/* Removed playfair.variable, whitespace */}
         <div className="flex flex-col min-h-screen">
           <Header />
           <main className="flex-grow">
@@ -40,7 +39,6 @@ export default function RootLayout({
           <Footer />
         </div>
         <Toaster />
-      </body>
-    </html>
+      </body></html> // Removed whitespace
   );
 }
