@@ -1,8 +1,7 @@
 'use client';
 
-import type { Post, PostFormData } from '@/lib/types';
-import { useFormState } from 'react-dom';
-import { useEffect } from 'react';
+import type { Post } from '@/lib/types';
+import { useActionState, useEffect } from 'react'; // Changed from react-dom and useFormState
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -23,7 +22,7 @@ const initialFormState: FormState = {
 };
 
 export function BlogPostForm({ post, action, submitButtonText = 'Submit' }: BlogPostFormProps) {
-  const [state, formAction] = useFormState(action, initialFormState);
+  const [state, formAction] = useActionState(action, initialFormState); // Changed from useFormState
   const router = useRouter();
   const { toast } = useToast();
 
