@@ -35,15 +35,26 @@ export function BlogPostForm({ post, action, submitButtonText = 'Submit' }: Blog
       });
       // Explicitly cast state to include newSlug for type safety
       const newSlug = (state as FormState & { newSlug?: string }).newSlug;
-      if (newSlug) {
-        // Redirect to the newly created/updated post using its slug
-        router.push(`/blog/${newSlug}`);
-      } else if (post) { // Fallback for update if slug didn't change (less likely with current logic)
-        router.push(`/blog/${post.slug}`);
-      } else { // Fallback if no slug is available (e.g., after creation error somehow?)
-        router.push('/blog');
-      }
-      router.refresh(); // Ensure client cache is updated
+
+      // Perform refresh first to potentially update data cache
+      router.refresh();
+
+      // Add a small delay before navigating to allow revalidation/refresh to potentially complete
+      // This is helpful for in-memory stores where timing can be tight.
+      const navigationTimeout = setTimeout(() => {
+        if (newSlug) {
+          // Redirect to the newly created/updated post using its slug
+          router.push(`/blog/${newSlug}`);
+        } else if (post) { // Fallback for update if slug didn't change
+          router.push(`/blog/${post.slug}`);
+        } else { // Fallback if no slug is available
+          router.push('/blog');
+        }
+      }, 150); // Increased delay slightly
+
+      // Cleanup timeout if component unmounts
+      return () => clearTimeout(navigationTimeout);
+
     } else if (state.message && !state.success && (state.errors || state.message.startsWith('Failed') || state.message.startsWith('Unauthorized'))) { // Show error toast if there are errors or a general failure message
       toast({
         title: "Error",

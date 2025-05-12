@@ -39,20 +39,17 @@ function slugify(text: string): string {
 }
 
 export async function getPosts(): Promise<Post[]> {
-  // Simulate API delay removed
-  // await new Promise(resolve => setTimeout(resolve, 100));
+  // No simulated API delay
   return [...posts].sort((a,b) => b.createdAt.getTime() - a.createdAt.getTime());
 }
 
 export async function getPostBySlug(slug: string): Promise<Post | undefined> {
-  // Simulate API delay removed
-  // await new Promise(resolve => setTimeout(resolve, 50));
+   // No simulated API delay
   return posts.find(post => post.slug === slug);
 }
 
 export async function createPost(data: PostFormData): Promise<Post> {
-  // Simulate API delay removed
-  // await new Promise(resolve => setTimeout(resolve, 100));
+   // No simulated API delay
   const slug = slugify(data.title);
   // Check if slug already exists, append number if it does
   let finalSlug = slug;
@@ -77,8 +74,7 @@ export async function createPost(data: PostFormData): Promise<Post> {
 }
 
 export async function updatePost(slug: string, data: PostFormData): Promise<Post | undefined> {
-  // Simulate API delay removed
-  // await new Promise(resolve => setTimeout(resolve, 100));
+  // No simulated API delay
   const postIndex = posts.findIndex(post => post.slug === slug);
   if (postIndex === -1) {
     return undefined;
@@ -119,8 +115,7 @@ export async function updatePost(slug: string, data: PostFormData): Promise<Post
 }
 
 export async function deletePost(slug: string): Promise<boolean> {
-  // Simulate API delay removed
-  // await new Promise(resolve => setTimeout(resolve, 100));
+  // No simulated API delay
   const initialLength = posts.length;
   posts = posts.filter(post => post.slug !== slug);
   return posts.length < initialLength;
