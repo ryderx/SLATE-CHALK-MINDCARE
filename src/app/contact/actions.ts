@@ -49,22 +49,32 @@ export async function sendContactEmailAction(
   const { name, email, message } = validatedFields.data;
 
   try {
-    // Simulate sending email by logging to the console
-    // In a real application, you would integrate an email service provider (e.g., Resend, SendGrid, AWS SES)
-    console.log('--- Simulating Email Sending ---');
+    // Simulate sending email to the site owner
+    console.log('--- Simulating Email Sending to Site Owner ---');
     console.log(`To: ${TO_EMAIL_ADDRESS}`);
     console.log(`From: "${name}" <${FROM_EMAIL_ADDRESS}>`); // Use a fixed sender email, and user's name in "From" display name
     console.log(`Reply-To: "${name}" <${email}>`); // Set Reply-To to the user's actual email
     console.log(`Subject: New Contact Form Submission from ${name}`);
     console.log('--- Message Body ---');
     console.log(message);
-    console.log('---------------------------');
+    console.log('---------------------------------------------');
+
+    // Simulate sending a confirmation email to the user
+    console.log('\n--- Simulating Confirmation Email to User ---');
+    console.log(`To: ${email}`); // User's email address
+    console.log(`From: "Slate & Chalk MindCare" <${FROM_EMAIL_ADDRESS}>`);
+    console.log(`Subject: Thank you for contacting Slate & Chalk MindCare`);
+    console.log('--- Message Body (Copy) ---');
+    console.log(`Hi ${name},\n\nThank you for reaching out to us. We have received your message:\n\n"${message}"\n\nWe will get back to you as soon as possible.\n\nBest regards,\nThe Slate & Chalk MindCare Team`);
+    console.log('------------------------------------------');
+
 
     // Example for a real email service (e.g. Resend - requires setup and API key)
     //
     // import { Resend } from 'resend';
     // const resend = new Resend(process.env.RESEND_API_KEY);
     //
+    // // Send to Site Owner
     // await resend.emails.send({
     //   from: `Contact Form <${FROM_EMAIL_ADDRESS}>`,
     //   to: [TO_EMAIL_ADDRESS],
@@ -79,6 +89,23 @@ export async function sendContactEmailAction(
     //     <p>${message.replace(/\n/g, '<br>')}</p>
     //   `,
     // });
+    //
+    // // Send to User
+    // await resend.emails.send({
+    //   from: `"Slate & Chalk MindCare" <${FROM_EMAIL_ADDRESS}>`,
+    //   to: [email], // User's email
+    //   subject: `Thank you for contacting Slate & Chalk MindCare`,
+    //   html: `
+    //     <h1>Thank You for Your Message!</h1>
+    //     <p>Hi ${name},</p>
+    //     <p>We have received your message and will get back to you soon:</p>
+    //     <hr>
+    //     <p><strong>Your Message:</strong></p>
+    //     <p>${message.replace(/\n/g, '<br>')}</p>
+    //     <hr>
+    //     <p>Best regards,<br>The Slate & Chalk MindCare Team</p>
+    //   `,
+    // });
 
     // Simulate a short delay
     await new Promise(resolve => setTimeout(resolve, 1000));
@@ -86,7 +113,7 @@ export async function sendContactEmailAction(
 
     return {
       success: true,
-      message: 'Thank you for your message! We will get back to you soon.',
+      message: 'Thank you for your message! We will get back to you soon. A copy of your message has been sent to your email address.',
     };
   } catch (error) {
     console.error('Error sending contact email (simulation):', error);
