@@ -33,21 +33,19 @@ export function Footer() {
   return (
     <footer className="bg-gray-100 py-12">
       <div className="container mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8">
-        {/* Column 1: Site Name */}
+        {/* Column 1: Site Logo */}
         <div>
           <div className="flex flex-col items-start">
             <Link href="/">
               <Image
                 src="/images/SlatenChalk@1x.svg"
                 alt="Slate & Chalk MindCare Logo"
-                width={150}
+                width={150} 
                 height={50}
                 className="mb-2"
               />
             </Link>
-            <Link href="/" className="text-xs font-bold text-primary hover:text-primary/80 transition-colors">
-              SLATE & CHALK <span className="font-light">MINDCARE</span>
-            </Link>
+            {/* Removed company name text link */}
           </div>
         </div>
 
