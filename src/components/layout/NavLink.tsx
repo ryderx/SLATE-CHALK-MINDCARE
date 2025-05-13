@@ -16,7 +16,7 @@ export function NavLink({ href, children, activeClassName = 'text-primary font-s
 
   return (
     <Link href={href} className={cn(
-      "text-sm font-medium text-muted-foreground transition-colors hover:text-primary pb-1",
+      "text-sm font-medium text-muted-foreground transition-colors hover:text-primary pb-1 text-center", // Added text-center class
       isActive && activeClassName,
       className
     )} {...props}>
