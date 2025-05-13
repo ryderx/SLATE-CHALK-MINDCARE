@@ -10,7 +10,7 @@ export default function HomePage() {
       {/* Hero Section */}
       <section className="relative h-[calc(100vh-5rem)] flex items-center justify-center text-center bg-secondary/30">
         <Image
-          src="https://picsum.photos/1600/900"
+          src="/images/my-new-hero-image.jpg"
           alt="Playful and colorful background"
           layout="fill"
           objectFit="cover"
@@ -93,7 +93,7 @@ export default function HomePage() {
           <div className="md:flex items-center gap-12">
             <div className="md:w-1/2 mb-8 md:mb-0">
               <Image 
-                src="https://picsum.photos/600/400?grayscale" 
+                src="/images/my-new-hero-image.jpg" 
                 alt="Happy kids illustration" 
                 width={600} 
                 height={400} 

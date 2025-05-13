@@ -23,6 +23,8 @@ const adminNavItems = [
     { href: '/blog/new', label: 'Create Post', icon: PlusCircle },
     { href: '/admin/testimonials', label: 'Manage Testimonials', icon: List },
     { href: '/admin/testimonials/new', label: 'Add Testimonial', icon: MessageSquareQuote },
+    // Added Settings link for admin
+    { href: '/admin/settings', label: 'Settings', icon: Settings },
 ];
 
 interface ClientNavLinksProps {
@@ -42,19 +44,25 @@ export function ClientNavLinks({ isAdmin, isLoggedIn }: ClientNavLinksProps) {
               ))}
                {/* Conditionally show Admin links for admins */}
                {isAdmin && (
-                 <div className="flex items-center space-x-3 border-l pl-4 ml-4 border-border"> {/* Reduced space-x-4 to space-x-3 */}
+                 // Added a wrapper div for better structure and potential future styling
+                 <div className="flex items-center space-x-3 border-l pl-4 ml-4 border-border">
                     <span className="text-sm font-semibold text-muted-foreground">Admin:</span>
-                    {adminNavItems.slice(0,2).map(item => (
-                         <NavLink key={item.href} href={item.href} activeClassName="text-accent font-semibold border-b-2 border-accent">
-                             <item.icon className="mr-1 h-4 w-4 inline-block" /> {item.label}
-                         </NavLink>
-                     ))}
-                     <NavLink href="/admin/testimonials" activeClassName="text-accent font-semibold border-b-2 border-accent">
+                    {/* Directly showing some admin links for quick access */}
+                     <NavLink key="/admin/posts" href="/admin/posts" activeClassName="text-accent font-semibold border-b-2 border-accent">
+                         <List className="mr-1 h-4 w-4 inline-block" /> Manage Posts
+                     </NavLink>
+                     <NavLink key="/blog/new" href="/blog/new" activeClassName="text-accent font-semibold border-b-2 border-accent">
+                         <PlusCircle className="mr-1 h-4 w-4 inline-block" /> Create Post
+                     </NavLink>
+                      <NavLink key="/admin/testimonials" href="/admin/testimonials" activeClassName="text-accent font-semibold border-b-2 border-accent">
                          <List className="mr-1 h-4 w-4 inline-block" /> Manage Testimonials
                      </NavLink>
+                      <NavLink key="/admin/settings" href="/admin/settings" activeClassName="text-accent font-semibold border-b-2 border-accent">
+                         <Settings className="mr-1 h-4 w-4 inline-block" /> Settings
+                     </NavLink>
                  </div>
-                )}
-            </nav>
+            )}
+        </nav>
 
              {/* Auth Buttons - Desktop */}
              <div className="hidden md:flex items-center space-x-2">
@@ -109,7 +117,9 @@ export function ClientNavLinks({ isAdmin, isLoggedIn }: ClientNavLinksProps) {
                             {adminNavItems.map(item => (
                                 <SheetTrigger key={item.href} asChild>
                                     <NavLink href={item.href} className="text-lg text-left justify-start w-full px-2 py-1 text-accent">
-                                        <item.icon className="mr-2 h-4 w-4" /> {item.label}
+                                        {/* Render the icon if available */}
+                                        {item.icon && <item.icon className="mr-2 h-4 w-4" />}
+                                        {item.label}
                                     </NavLink>
                                 </SheetTrigger>
                             ))}
