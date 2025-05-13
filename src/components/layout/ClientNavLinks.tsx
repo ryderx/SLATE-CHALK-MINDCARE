@@ -6,7 +6,6 @@ import { NavLink } from './NavLink';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Menu, LogIn, LogOut, Settings, PlusCircle, MessageSquareQuote, List } from 'lucide-react';
-import { cn } from '@/lib/utils';
 import { LogoutButton } from './LogoutButton';
 import Image from 'next/image'; // Import Image for mobile menu logo
 
@@ -102,10 +101,10 @@ export function ClientNavLinks({ isAdmin, isLoggedIn }: ClientNavLinksProps) {
                   <div className="grid gap-4 py-6">
                     <Link href="/" className="flex items-center text-xl font-bold text-primary mb-4">
                         <Image
-                            src="/images/logo.png"
+                            src="/images/SlatenChalk@1x.svg" // Use the same logo as the footer
                             alt="Slate & Chalk MindCare Logo"
-                            width={30}
-                            height={30}
+                            width={60} // Adjusted width for mobile menu (proportional to 150x50)
+                            height={20} // Adjusted height for mobile menu (proportional to 150x50)
                             className="mr-2"
                         />
                       SLATE & CHALK <span className="font-light">MINDCARE</span>
