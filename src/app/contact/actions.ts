@@ -2,6 +2,7 @@
 'use server';
 
 import { z } from 'zod';
+import type { AppSettings, SmtpSettings } from '@/lib/types'; // Import AppSettings
 
 const contactFormSchema = z.object({
   name: z.string().min(1, "Name is required.").max(100, "Name cannot exceed 100 characters."),
@@ -20,14 +21,31 @@ export interface ContactFormState {
   };
 }
 
-// Environment variable for the recipient email, defaulting to the requested address
-const TO_EMAIL_ADDRESS = process.env.CONTACT_FORM_RECIPIENT_EMAIL || 'info@slatenchalkmindcare.com';
-// It's good practice to have a dedicated sender email for your application
-const FROM_EMAIL_ADDRESS = process.env.CONTACT_FORM_SENDER_EMAIL || 'noreply@yourdomain.com';
+// Default recipient if not configured via SMTP settings
+const DEFAULT_TO_EMAIL_ADDRESS = 'info@slatenchalkmindcare.com';
+const DEFAULT_FROM_EMAIL_ADDRESS = 'noreply@yourdomain.com'; // Fallback if not in SMTP settings
 
+async function getSmtpConfiguration(): Promise<SmtpSettings | undefined> {
+  try {
+    // Fetch from the general settings endpoint
+    // This fetch needs to be dynamic if API_BASE_URL can change at runtime,
+    // or ensure API_BASE_URL is correctly set for server-side fetches.
+    const API_BASE_URL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:9002';
+    const response = await fetch(`${API_BASE_URL}/api/settings`, { cache: 'no-store' });
+    if (response.ok) {
+      const settings: AppSettings = await response.json();
+      if (settings.smtpSettings && settings.smtpSettings.host) { // Check if host is configured as a sign of setup
+        return settings.smtpSettings;
+      }
+    }
+  } catch (error) {
+    console.error("Failed to fetch SMTP settings for contact form:", error);
+  }
+  return undefined;
+}
 
 export async function sendContactEmailAction(
-  prevState: ContactFormState, // Changed from any to ContactFormState
+  prevState: ContactFormState,
   formData: FormData
 ): Promise<ContactFormState> {
   const rawData = {
@@ -47,77 +65,72 @@ export async function sendContactEmailAction(
   }
 
   const { name, email, message } = validatedFields.data;
+  const smtpConfig = await getSmtpConfiguration();
 
   try {
-    // Simulate sending email to the site owner
-    console.log('--- Simulating Email Sending to Site Owner ---');
-    console.log(`To: ${TO_EMAIL_ADDRESS}`);
-    console.log(`From: "${name}" <${FROM_EMAIL_ADDRESS}>`); // Use a fixed sender email, and user's name in "From" display name
-    console.log(`Reply-To: "${name}" <${email}>`); // Set Reply-To to the user's actual email
-    console.log(`Subject: New Contact Form Submission from ${name}`);
-    console.log('--- Message Body ---');
-    console.log(message);
-    console.log('---------------------------------------------');
+    if (smtpConfig && smtpConfig.host) {
+      console.log('--- Using Configured SMTP Settings ---');
+      console.log(`SMTP Host: ${smtpConfig.host}, Port: ${smtpConfig.port}, User: ${smtpConfig.user}, Secure: ${smtpConfig.secure}`);
+      // In a real app, you would use nodemailer or a similar library here.
+      // Example:
+      // const transporter = nodemailer.createTransport({
+      //   host: smtpConfig.host,
+      //   port: smtpConfig.port,
+      //   secure: smtpConfig.secure,
+      //   auth: { user: smtpConfig.user, pass: smtpConfig.pass },
+      // });
 
-    // Simulate sending a confirmation email to the user
-    console.log('\n--- Simulating Confirmation Email to User ---');
-    console.log(`To: ${email}`); // User's email address
-    console.log(`From: "Slate & Chalk MindCare" <${FROM_EMAIL_ADDRESS}>`);
-    console.log(`Subject: Thank you for contacting Slate & Chalk MindCare`);
-    console.log('--- Message Body (Copy) ---');
-    console.log(`Hi ${name},\n\nThank you for reaching out to us. We have received your message:\n\n"${message}"\n\nWe will get back to you as soon as possible.\n\nBest regards,\nThe Slate & Chalk MindCare Team`);
-    console.log('------------------------------------------');
+      // Send to Site Owner (using configured 'from' or default)
+      const siteOwnerEmail = smtpConfig.fromEmail || DEFAULT_TO_EMAIL_ADDRESS; // Or a dedicated admin email from settings
+      console.log('--- Simulating Email Sending (via SMTP config) to Site Owner ---');
+      console.log(`To: ${DEFAULT_TO_EMAIL_ADDRESS}`); // Target email as per original request
+      console.log(`From: "${name}" <${smtpConfig.fromEmail || DEFAULT_FROM_EMAIL_ADDRESS}>`);
+      console.log(`Reply-To: "${name}" <${email}>`);
+      console.log(`Subject: New Contact Form Submission from ${name} (via SMTP)`);
+      console.log('--- Message Body ---');
+      console.log(message);
+      console.log('---------------------------------------------');
+      // await transporter.sendMail({ from: `"${name}" <${smtpConfig.fromEmail}>`, to: DEFAULT_TO_EMAIL_ADDRESS, replyTo: email, subject: ..., html: ... });
 
+      // Send Confirmation to User (using configured 'from' or default)
+      console.log('\n--- Simulating Confirmation Email (via SMTP config) to User ---');
+      console.log(`To: ${email}`);
+      console.log(`From: "Slate & Chalk MindCare" <${smtpConfig.fromEmail || DEFAULT_FROM_EMAIL_ADDRESS}>`);
+      console.log(`Subject: Thank you for contacting Slate & Chalk MindCare (via SMTP)`);
+      console.log('--- Message Body (Copy) ---');
+      console.log(`Hi ${name},\n\nThank you for reaching out. We received your message:\n\n"${message}"\n\nWe'll reply soon.\n\nBest,\nThe Slate & Chalk MindCare Team`);
+      console.log('------------------------------------------');
+      // await transporter.sendMail({ from: `"Slate & Chalk MindCare" <${smtpConfig.fromEmail}>`, to: email, subject: ..., html: ... });
 
-    // Example for a real email service (e.g. Resend - requires setup and API key)
-    //
-    // import { Resend } from 'resend';
-    // const resend = new Resend(process.env.RESEND_API_KEY);
-    //
-    // // Send to Site Owner
-    // await resend.emails.send({
-    //   from: `Contact Form <${FROM_EMAIL_ADDRESS}>`,
-    //   to: [TO_EMAIL_ADDRESS],
-    //   reply_to: email, // User's email
-    //   subject: `New Contact Form Submission from ${name}`,
-    //   html: `
-    //     <h1>New Contact Form Submission</h1>
-    //     <p><strong>Name:</strong> ${name}</p>
-    //     <p><strong>Email:</strong> ${email}</p>
-    //     <hr>
-    //     <p><strong>Message:</strong></p>
-    //     <p>${message.replace(/\n/g, '<br>')}</p>
-    //   `,
-    // });
-    //
-    // // Send to User
-    // await resend.emails.send({
-    //   from: `"Slate & Chalk MindCare" <${FROM_EMAIL_ADDRESS}>`,
-    //   to: [email], // User's email
-    //   subject: `Thank you for contacting Slate & Chalk MindCare`,
-    //   html: `
-    //     <h1>Thank You for Your Message!</h1>
-    //     <p>Hi ${name},</p>
-    //     <p>We have received your message and will get back to you soon:</p>
-    //     <hr>
-    //     <p><strong>Your Message:</strong></p>
-    //     <p>${message.replace(/\n/g, '<br>')}</p>
-    //     <hr>
-    //     <p>Best regards,<br>The Slate & Chalk MindCare Team</p>
-    //   `,
-    // });
+    } else {
+      console.warn('SMTP settings not configured or host not found. Falling back to console log simulation.');
+      // Fallback simulation as before
+      console.log('--- Simulating Email Sending to Site Owner (No SMTP Config) ---');
+      console.log(`To: ${DEFAULT_TO_EMAIL_ADDRESS}`);
+      console.log(`From: "${name}" <${DEFAULT_FROM_EMAIL_ADDRESS}>`);
+      console.log(`Reply-To: "${name}" <${email}>`);
+      console.log(`Subject: New Contact Form Submission from ${name}`);
+      console.log('--- Message Body ---');
+      console.log(message);
+      console.log('---------------------------------------------');
 
-    // Simulate a short delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
+      console.log('\n--- Simulating Confirmation Email to User (No SMTP Config) ---');
+      console.log(`To: ${email}`);
+      console.log(`From: "Slate & Chalk MindCare" <${DEFAULT_FROM_EMAIL_ADDRESS}>`);
+      console.log(`Subject: Thank you for contacting Slate & Chalk MindCare`);
+      console.log('--- Message Body (Copy) ---');
+      console.log(`Hi ${name},\n\nThank you for reaching out to us. We have received your message:\n\n"${message}"\n\nWe will get back to you as soon as possible.\n\nBest regards,\nThe Slate & Chalk MindCare Team`);
+      console.log('------------------------------------------');
+    }
 
+    await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate delay
 
     return {
       success: true,
-      message: 'Thank you for your message! We will get back to you soon. A copy of your message has been sent to your email address.',
+      message: 'Thank you for your message! We will get back to you soon. A copy of your message has been sent to your email address (simulated).',
     };
   } catch (error) {
-    console.error('Error sending contact email (simulation):', error);
-    // In a real scenario, you'd log this error to a monitoring service
+    console.error('Error sending contact email:', error);
     return {
       success: false,
       message: 'An unexpected error occurred while trying to send your message. Please try again later.',

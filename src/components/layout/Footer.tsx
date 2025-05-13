@@ -1,15 +1,10 @@
-
+// src/components/layout/Footer.tsx
 'use client';
 
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
-
-interface SocialLinks {
-    linkedin?: string;
-    instagram?: string;
-    facebook?: string;
-}
+import type { SocialLinks, AppSettings } from '@/lib/types'; // Import AppSettings
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
@@ -18,17 +13,17 @@ export function Footer() {
   useEffect(() => {
     const fetchSocialLinks = async () => {
       try {
-        const response = await fetch('/api/settings/social');
+        const response = await fetch('/api/settings'); // Updated API endpoint
         if (response.ok) {
-          const data: SocialLinks = await response.json();
-          setSocialLinks(data);
+          const data: AppSettings = await response.json();
+          if (data.socialLinks) {
+            setSocialLinks(data.socialLinks);
+          }
         } else {
-          console.error('Failed to fetch social media links');
-          // Optionally set a default or handle error display
+          console.error('Failed to fetch social media links for footer');
         }
       } catch (error) {
-        console.error('Error fetching social media links:', error);
-        // Optionally set a default or handle error display
+        console.error('Error fetching social media links for footer:', error);
       }
     };
 
@@ -81,7 +76,7 @@ export function Footer() {
         <div>
           <h3 className="text-lg font-semibold text-foreground mb-4">Connect</h3>
           <ul className="space-y-2 text-muted-foreground">
-            {socialLinks?.linkedin && (
+            {socialLinks?.linkedin && socialLinks.linkedin.trim() && (
               <li>
                 <a
                   href={socialLinks.linkedin}
@@ -93,7 +88,7 @@ export function Footer() {
                 </a>
               </li>
             )}
-            {socialLinks?.instagram && (
+            {socialLinks?.instagram && socialLinks.instagram.trim() && (
               <li>
                 <a
                   href={socialLinks.instagram}
@@ -105,7 +100,7 @@ export function Footer() {
                 </a>
               </li>
             )}
-            {socialLinks?.facebook && (
+            {socialLinks?.facebook && socialLinks.facebook.trim() && (
               <li>
                 <a
                   href={socialLinks.facebook}
