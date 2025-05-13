@@ -17,6 +17,7 @@ const testimonialSchema = z.object({
   name: z.string().min(1, "Name is required.").max(100, "Name cannot exceed 100 characters."),
   // Use coerce for number input from FormData
   stars: z.coerce.number().min(1, "Stars must be between 1 and 5.").max(5, "Stars must be between 1 and 5."),
+  url: z.string().url("Please enter a valid URL (e.g., https://example.com).").max(200, "URL cannot exceed 200 characters.").optional().or(z.literal('')), // Optional, allow empty string
   imageHint: z.string().max(50, "Image hint cannot exceed 50 characters.").optional().nullable(), // Allow null from form
 });
 
@@ -27,6 +28,7 @@ export type TestimonialFormState = {
     quote?: string[];
     name?: string[];
     stars?: string[];
+    url?: string[];
     imageHint?: string[];
     general?: string[];
   };
@@ -88,13 +90,14 @@ export async function createTestimonialAction(prevState: TestimonialFormState, f
     quote: formData.get('quote'),
     name: formData.get('name'),
     stars: formData.get('stars'),
+    url: formData.get('url') || undefined, // Handle empty string, convert to undefined for Zod
     imageHint: formData.get('imageHint') || undefined, // Handle empty string
   };
 
   const validatedFields = testimonialSchema.safeParse(rawData);
 
   if (!validatedFields.success) {
-    console.log("Validation Errors:", validatedFields.error.flatten().fieldErrors);
+    console.log("Validation Errors (Create Testimonial):", validatedFields.error.flatten().fieldErrors);
     return {
       message: 'Validation failed. Please check the fields.',
       errors: validatedFields.error.flatten().fieldErrors,
@@ -144,13 +147,14 @@ export async function updateTestimonialAction(id: string, prevState: Testimonial
     quote: formData.get('quote'),
     name: formData.get('name'),
     stars: formData.get('stars'),
+    url: formData.get('url') || undefined, // Handle empty string, convert to undefined for Zod
     imageHint: formData.get('imageHint') || undefined,
   };
 
   const validatedFields = testimonialSchema.safeParse(rawData);
 
   if (!validatedFields.success) {
-    console.log("Validation Errors:", validatedFields.error.flatten().fieldErrors);
+    console.log("Validation Errors (Update Testimonial):", validatedFields.error.flatten().fieldErrors);
     return {
       message: 'Validation failed. Please check the fields.',
       errors: validatedFields.error.flatten().fieldErrors,

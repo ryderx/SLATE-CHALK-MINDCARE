@@ -10,7 +10,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import type { TestimonialFormState } from '@/app/admin/testimonials/actions';
-import { Star } from 'lucide-react';
+import { Star, Link as LinkIcon } from 'lucide-react'; // Added LinkIcon
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 interface TestimonialFormProps {
@@ -121,6 +121,32 @@ export function TestimonialForm({ testimonial, action, submitButtonText = 'Submi
                 {state.errors.stars.join(', ')}
             </p>
            )}
+      </div>
+
+      <div>
+        <Label htmlFor="url" className="text-lg font-medium">Website URL (Optional)</Label>
+        <div className="relative mt-1">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <LinkIcon className="h-5 w-5 text-muted-foreground" />
+            </div>
+            <Input
+              id="url"
+              name="url"
+              type="url"
+              defaultValue={testimonial?.url}
+              placeholder="https://example.com"
+              className="pl-10" // Add padding to make space for the icon
+              aria-describedby="url-error"
+            />
+        </div>
+        {state.errors?.url && (
+          <p id="url-error" className="text-sm text-destructive mt-1">
+            {state.errors.url.join(', ')}
+          </p>
+        )}
+         <p className="text-xs text-muted-foreground mt-1">
+          Provide a link to the client's website or relevant page if applicable.
+        </p>
       </div>
       
       {/* ImageHint input removed based on schema in actions.ts being optional and nullable, and not present in the form fields previously */}

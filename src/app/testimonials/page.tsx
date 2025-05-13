@@ -1,6 +1,6 @@
 
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Star, UserCircle, Pencil, Trash2, PlusCircle } from "lucide-react";
+import { Star, UserCircle, Pencil, Trash2, PlusCircle, Link as LinkIcon } from "lucide-react"; // Added LinkIcon
 import { getTestimonials } from "@/lib/testimonials-data"; // Fetch data dynamically
 import { isAdminSession } from "@/lib/auth-utils"; // Check admin status
 import Link from "next/link";
@@ -72,7 +72,19 @@ export default async function TestimonialsPage() {
                     {/* Use a generic icon or a placeholder user image */}
                     <UserCircle className="h-10 w-10 text-primary mr-3" />
                     <div>
-                      <p className="font-semibold text-primary text-lg">{testimonial.name}</p>
+                      {testimonial.url ? (
+                        <a 
+                          href={testimonial.url} 
+                          target="_blank" 
+                          rel="noopener noreferrer" 
+                          className="font-semibold text-primary text-lg hover:underline flex items-center"
+                        >
+                          {testimonial.name}
+                          <LinkIcon className="ml-1.5 h-4 w-4 text-accent" />
+                        </a>
+                      ) : (
+                        <p className="font-semibold text-primary text-lg">{testimonial.name}</p>
+                      )}
                       <p className="text-sm text-muted-foreground">Valued Client</p>
                     </div>
                   </div>
@@ -84,4 +96,3 @@ export default async function TestimonialsPage() {
     </div>
   );
 }
-

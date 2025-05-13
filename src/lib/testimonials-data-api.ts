@@ -12,6 +12,7 @@ let testimonials: Testimonial[] = [
     quote: "Slate & Chalk MindCare transformed my perspective on life. Their compassionate approach made all the difference.",
     name: "A. N.",
     stars: 5,
+    url: "https://example.com/an-story",
     createdAt: new Date('2023-12-01T10:00:00Z'),
     updatedAt: new Date('2023-12-01T10:00:00Z'),
   },
@@ -28,6 +29,7 @@ let testimonials: Testimonial[] = [
     quote: "The couples counseling sessions helped us rebuild our communication and strengthen our bond. We are so grateful.",
     name: "M. & K. S.",
     stars: 5,
+    url: "https://example.com/mks-journey",
     createdAt: new Date('2024-01-05T09:15:00Z'),
     updatedAt: new Date('2024-01-05T09:15:00Z'),
   },
@@ -67,6 +69,7 @@ export async function createTestimonial(data: TestimonialFormData): Promise<Test
     quote: data.quote,
     name: data.name,
     stars: data.stars,
+    url: data.url, // Add URL
     createdAt: new Date(),
     updatedAt: new Date(),
   };
@@ -90,6 +93,7 @@ export async function updateTestimonial(id: string, data: TestimonialFormData): 
     quote: data.quote,
     name: data.name,
     stars: data.stars,
+    url: data.url, // Update URL
     updatedAt: new Date(),
   };
   testimonials[testimonialIndex] = updatedTestimonial; // Update the in-memory store
@@ -119,3 +123,4 @@ export async function deleteTestimonial(id: string): Promise<boolean> {
   }
   return deleted;
 }
+

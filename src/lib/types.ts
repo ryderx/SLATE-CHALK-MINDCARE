@@ -29,6 +29,7 @@ export interface Testimonial {
   quote: string;
   name: string;
   stars: number; // Typically 1-5
+  url?: string; // Optional URL for the testimonial provider
   createdAt: Date;
   updatedAt: Date;
 }
@@ -38,6 +39,7 @@ export type TestimonialFormData = {
   quote: string;
   name: string;
   stars: number;
+  url?: string; // Optional URL for the testimonial provider
 };
 
 // Settings Types
@@ -60,3 +62,4 @@ export interface AppSettings {
   socialLinks: SocialLinks;
   smtpSettings?: SmtpSettings;
 }
+
