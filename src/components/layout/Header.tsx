@@ -17,8 +17,8 @@ export async function Header() {
           <Image
             src="/images/SlatenChalk@1x.svg" 
             alt="Slate & Chalk MindCare Logo"
-            width={75} 
-            height={25} 
+            width={86} // Increased from 75 (75 * 1.15 = 86.25)
+            height={29} // Increased from 25 (25 * 1.15 = 28.75)
             className="mr-3" 
           />
           {/* Logo text removed */}
@@ -31,3 +31,4 @@ export async function Header() {
     </header>
   );
 }
+
