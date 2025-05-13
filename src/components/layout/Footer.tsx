@@ -42,10 +42,10 @@ export function Footer() {
           <div className="flex flex-col items-start">
             <Link href="/">
               <Image
-                src="/public/images/SlatenChalk@1x.svg"
+                src="/images/SlatenChalk@1x.svg"
                 alt="Slate & Chalk MindCare Logo"
-                width={150} // Adjust width as needed
-                height={50} // Adjust height as needed
+                width={150}
+                height={50}
                 className="mb-2"
               />
             </Link>
