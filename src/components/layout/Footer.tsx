@@ -43,6 +43,7 @@ export function Footer() {
                 width={150} 
                 height={50}
                 className="mb-2"
+                unoptimized={true} // Add unoptimized for SVG
               />
             </Link>
             {/* Removed company name text link */}
