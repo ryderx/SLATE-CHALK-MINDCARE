@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -49,7 +50,7 @@ export function Footer() {
                 className="mb-2"
               />
             </Link>
-            <Link href="/" className="text-2xl font-bold text-primary hover:text-primary/80 transition-colors">
+            <Link href="/" className="text-xs font-bold text-primary hover:text-primary/80 transition-colors">
               SLATE & CHALK <span className="font-light">MINDCARE</span>
             </Link>
           </div>
