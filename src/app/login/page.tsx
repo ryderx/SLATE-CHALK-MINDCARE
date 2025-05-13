@@ -41,11 +41,11 @@ export default function LoginPage() {
 
       // Login successful
       console.log('[Login Page] Login successful via API:', data);
-      // Redirect to the blog page where admin controls are visible
-      router.push('/blog'); // Redirect to blog page
+      // Redirect to the admin dashboard page
+      router.push('/admin'); // Redirect to admin dashboard page
       // await new Promise(resolve => setTimeout(resolve, 100)); // Usually not needed
       router.refresh(); // Force refresh of Server Components to pick up new cookie state
-      console.log('[Login Page] Redirecting to /blog and refreshing...');
+      console.log('[Login Page] Redirecting to /admin and refreshing...');
 
     } catch (err: any) {
       console.error('[Login Page] Login fetch/processing error:', err); // Log the actual error
@@ -111,3 +111,4 @@ export default function LoginPage() {
     </div>
   );
 }
+

@@ -51,19 +51,22 @@ export default async function AdminDashboardPage() {
           </Card>
          </Link>
 
-         {/* Placeholder for Settings or other admin sections */}
-         <Card className="shadow-lg bg-muted border-dashed h-full flex flex-col justify-center items-center text-center">
-            <CardHeader>
-                <div className="flex items-center text-muted-foreground">
-                    <Settings className="h-8 w-8 mr-3" />
-                    <CardTitle className="text-2xl">More Settings (Soon)</CardTitle>
-                </div>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground">Future admin sections will appear here.</p>
-            </CardContent>
-          </Card>
+         {/* Application Settings Card */}
+         <Link href="/admin/settings" className="block hover:no-underline">
+            <Card className="shadow-lg hover:shadow-xl hover:border-primary transition-all duration-200 h-full">
+                <CardHeader>
+                    <div className="flex items-center text-primary">
+                        <Settings className="h-8 w-8 mr-3" />
+                        <CardTitle className="text-2xl">Application Settings</CardTitle>
+                    </div>
+                </CardHeader>
+                <CardContent>
+                <p className="text-muted-foreground">Configure general application settings, social media links, and SMTP.</p>
+                </CardContent>
+            </Card>
+        </Link>
       </div>
     </div>
   );
 }
+
