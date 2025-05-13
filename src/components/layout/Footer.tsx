@@ -4,13 +4,17 @@
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
-import type { SocialLinks, AppSettings } from '@/lib/types'; // Import AppSettings
+import type { SocialLinks, AppSettings } from '@/lib/types';
 
 export function Footer() {
-  const currentYear = new Date().getFullYear();
+  const [currentYear, setCurrentYear] = useState<number | null>(null);
   const [socialLinks, setSocialLinks] = useState<SocialLinks | null>(null);
+  const [isClient, setIsClient] = useState(false); // To track if component has mounted
 
   useEffect(() => {
+    setIsClient(true); // Set to true after component mounts on client
+    setCurrentYear(new Date().getFullYear());
+
     const fetchSocialLinks = async () => {
       try {
         const response = await fetch('/api/settings'); // Updated API endpoint
@@ -46,7 +50,6 @@ export function Footer() {
                 unoptimized={true} // Add unoptimized for SVG
               />
             </Link>
-            {/* Removed company name text link */}
           </div>
         </div>
 
@@ -75,7 +78,8 @@ export function Footer() {
         <div>
           <h3 className="text-lg font-semibold text-foreground mb-4">Connect</h3>
           <ul className="space-y-2 text-muted-foreground">
-            {socialLinks?.linkedin && socialLinks.linkedin.trim() && (
+            {/* Only render social links on the client after mount and if data exists */}
+            {isClient && socialLinks?.linkedin && socialLinks.linkedin.trim() && (
               <li>
                 <a
                   href={socialLinks.linkedin}
@@ -87,7 +91,7 @@ export function Footer() {
                 </a>
               </li>
             )}
-            {socialLinks?.instagram && socialLinks.instagram.trim() && (
+            {isClient && socialLinks?.instagram && socialLinks.instagram.trim() && (
               <li>
                 <a
                   href={socialLinks.instagram}
@@ -99,7 +103,7 @@ export function Footer() {
                 </a>
               </li>
             )}
-            {socialLinks?.facebook && socialLinks.facebook.trim() && (
+            {isClient && socialLinks?.facebook && socialLinks.facebook.trim() && (
               <li>
                 <a
                   href={socialLinks.facebook}
@@ -111,6 +115,13 @@ export function Footer() {
                 </a>
               </li>
             )}
+            {/* Render a placeholder or nothing if not isClient to match server render */}
+            {!isClient && (
+                <>
+                    {/* You can render empty LIs or a single placeholder LI if you want to reserve space */}
+                    {/* For simplicity, we can render nothing here, and the Login link will be the only initial item */}
+                </>
+            )}
             <li>
               <Link href="/login" className="hover:text-primary transition-colors">
                 Login
@@ -121,7 +132,12 @@ export function Footer() {
       </div>
 
       <div className="container mx-auto px-4 mt-8 text-center text-sm text-muted-foreground">
-        &copy; {currentYear} SLATE & CHALK MINDCARE. All rights reserved.
+        {isClient && currentYear ? (
+          `© ${currentYear} SLATE & CHALK MINDCARE. All rights reserved.`
+        ) : (
+          // Fallback for server render and initial client render before currentYear is set
+          `© SLATE & CHALK MINDCARE. All rights reserved.`
+        )}
       </div>
     </footer>
   );
