@@ -12,7 +12,6 @@ let testimonials: Testimonial[] = [
     quote: "Slate & Chalk MindCare transformed my perspective on life. Their compassionate approach made all the difference.",
     name: "A. N.",
     stars: 5,
-    imageHint: "happy person",
     createdAt: new Date('2023-12-01T10:00:00Z'),
     updatedAt: new Date('2023-12-01T10:00:00Z'),
   },
@@ -21,7 +20,6 @@ let testimonials: Testimonial[] = [
     quote: "I felt truly heard and understood. The therapists are incredibly skilled and supportive. Highly recommend!",
     name: "J. B.",
     stars: 5,
-    imageHint: "thoughtful individual",
     createdAt: new Date('2023-12-10T11:30:00Z'),
     updatedAt: new Date('2023-12-10T11:30:00Z'),
   },
@@ -30,7 +28,6 @@ let testimonials: Testimonial[] = [
     quote: "The couples counseling sessions helped us rebuild our communication and strengthen our bond. We are so grateful.",
     name: "M. & K. S.",
     stars: 5,
-    imageHint: "content couple",
     createdAt: new Date('2024-01-05T09:15:00Z'),
     updatedAt: new Date('2024-01-05T09:15:00Z'),
   },
@@ -39,7 +36,6 @@ let testimonials: Testimonial[] = [
     quote: "A safe and professional environment. I've learned so much about myself and developed effective coping strategies.",
     name: "L. P.",
     stars: 4,
-    imageHint: "calm nature",
     createdAt: new Date('2024-01-20T16:00:00Z'),
     updatedAt: new Date('2024-01-20T16:00:00Z'),
   },
@@ -71,7 +67,6 @@ export async function createTestimonial(data: TestimonialFormData): Promise<Test
     quote: data.quote,
     name: data.name,
     stars: data.stars,
-    imageHint: data.imageHint,
     createdAt: new Date(),
     updatedAt: new Date(),
   };
@@ -95,7 +90,6 @@ export async function updateTestimonial(id: string, data: TestimonialFormData): 
     quote: data.quote,
     name: data.name,
     stars: data.stars,
-    imageHint: data.imageHint,
     updatedAt: new Date(),
   };
   testimonials[testimonialIndex] = updatedTestimonial; // Update the in-memory store

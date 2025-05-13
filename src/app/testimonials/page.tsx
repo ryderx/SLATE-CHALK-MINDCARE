@@ -1,7 +1,6 @@
 
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Star, UserCircle, Pencil, Trash2, PlusCircle } from "lucide-react";
-import Image from "next/image";
 import { getTestimonials } from "@/lib/testimonials-data"; // Fetch data dynamically
 import { isAdminSession } from "@/lib/auth-utils"; // Check admin status
 import Link from "next/link";
@@ -67,15 +66,6 @@ export default async function TestimonialsPage() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="flex-grow">
-                   {/* Use placeholder image with hint */}
-                   <Image
-                      src={`https://picsum.photos/seed/testimonial-${testimonial.id}/${testimonial.imageHint ? testimonial.imageHint.replace(/\s+/g, '-') : 'abstract'}/400/200`}
-                      alt={testimonial.imageHint || 'Abstract background related to testimonial'}
-                      width={400}
-                      height={200}
-                      className="rounded-md mt-4 w-full h-auto object-cover"
-                      data-ai-hint={testimonial.imageHint || "abstract pattern"}
-                    />
                 </CardContent>
                 <CardFooter className="mt-auto pt-4 border-t">
                   <div className="flex items-center">

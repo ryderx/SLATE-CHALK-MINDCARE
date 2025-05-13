@@ -96,7 +96,7 @@ export function TestimonialForm({ testimonial, action, submitButtonText = 'Submi
       </div>
 
       <div>
-        <Label className="text-lg font-medium mb-2 block">Rating (Stars)</Label>
+        <Label className="text-lg font-medium mb-2 block">Rating (Stars)</n        </Label>
          <RadioGroup
             name="stars"
             defaultValue={testimonial?.stars?.toString() ?? '5'} // Default to 5 stars if not set
@@ -122,25 +122,6 @@ export function TestimonialForm({ testimonial, action, submitButtonText = 'Submi
                 {state.errors.stars.join(', ')}
             </p>
            )}
-      </div>
-
-       <div>
-        <Label htmlFor="imageHint" className="text-lg font-medium">Image Hint (Optional)</Label>
-        <Input
-          id="imageHint"
-          name="imageHint"
-          type="text"
-          defaultValue={testimonial?.imageHint ?? ''}
-          className="mt-1"
-          aria-describedby="imageHint-error"
-           placeholder="e.g., happy person, calm nature"
-        />
-         <p className="text-xs text-muted-foreground mt-1">A short description for finding a suitable placeholder image.</p>
-        {state.errors?.imageHint && (
-          <p id="imageHint-error" className="text-sm text-destructive mt-1">
-            {state.errors.imageHint.join(', ')}
-          </p>
-        )}
       </div>
 
       <Button type="submit" className="bg-accent hover:bg-accent/90 text-accent-foreground" size="lg">

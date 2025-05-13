@@ -31,8 +31,6 @@ export interface Testimonial {
   stars: number; // Typically 1-5
   createdAt: Date;
   updatedAt: Date;
-  // Optional imageHint if we want to manage that too
-  imageHint?: string;
 }
 
 // Add Testimonial form data type
@@ -40,6 +38,5 @@ export type TestimonialFormData = {
   quote: string;
   name: string;
   stars: number;
-  imageHint?: string; // Optional
 };
 
