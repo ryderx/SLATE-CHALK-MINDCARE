@@ -22,44 +22,44 @@ h1, h2, h3, h4, h5, h6 {
     --popover: 0 0% 100%; /* White */
     --popover-foreground: 220 25% 35%; /* Soft Dark Blue */
     
-    /* New color palette: primary is Pink (FAD1EA), secondary is Blue (D3F0F9), accent is Lavender (D8D1F9) */
-    --primary: 328 83% 90%; /* Light Pink from FAD1EA */
-    --primary-foreground: 330 50% 30%; /* Dark Pink/Maroon, for contrast on light primary */
+    /* New color palette: primary is Lavender (D8D1F9), secondary is Blue (D3F0F9), accent is Pink (FAD1EA) */
+    --primary: 251 78% 90%; /* Light Lavender from D8D1F9 */
+    --primary-foreground: 250 50% 25%; /* Dark Purple, for contrast on light primary */
     
     --secondary: 198 69% 90%; /* Light Sky Blue from D3F0F9 */
     --secondary-foreground: 200 50% 25%; /* Dark Blue, for contrast on light secondary */
     
-    --accent: 251 78% 90%; /* Light Lavender from D8D1F9 */
-    --accent-foreground: 250 50% 25%; /* Dark Purple, for contrast on light accent */
+    --accent: 328 83% 90%; /* Light Pink from FAD1EA */
+    --accent-foreground: 330 50% 30%; /* Dark Pink/Maroon, for contrast on light accent */
     
-    /* Derived colors based on new primary (Pinkish) */
-    --muted: 330 70% 95%; /* Very light shade of primary (Pink) */
-    --muted-foreground: 330 40% 50%; /* Muted primary (Pink) */
+    /* Derived colors based on new primary (Lavender) */
+    --muted: 250 70% 95%; /* Very light shade of primary (Lavender) */
+    --muted-foreground: 250 40% 50%; /* Muted primary (Lavender) */
     
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
     
-    --border: 330 60% 85%; /* Lighter version of primary (Pink), for borders */
-    --input: 330 60% 94%; /* Very light primary (Pink) for input background */
-    --ring: 328 83% 70%; /* Slightly darker/more saturated primary (Pink) for focus rings */
+    --border: 250 60% 85%; /* Lighter version of primary (Lavender), for borders */
+    --input: 250 60% 94%; /* Very light primary (Lavender) for input background */
+    --ring: 251 78% 70%; /* Slightly darker/more saturated primary (Lavender) for focus rings */
     
-    --chart-1: 328 83% 70%; /* New Primary based (Pinkish) */
+    --chart-1: 251 78% 70%; /* New Primary based (Lavender) */
     --chart-2: 198 69% 70%; /* New Secondary based (Bluish) */
-    --chart-3: 251 78% 75%; /* New Accent based (Lavender) */
+    --chart-3: 328 83% 75%; /* New Accent based (Pinkish) */
     --chart-4: 150 60% 70%; /* A complementary soft green */
     --chart-5: 30 80% 70%; /* A complementary soft orange */
     
     --radius: 0.8rem; /* Slightly more rounded */
 
-    /* Sidebar variables - updated for new primary (Pinkish) and accent (Lavender) */
-    --sidebar-background: 328 80% 98%; /* Very very light primary (Pinkish) */
-    --sidebar-foreground: 330 50% 35%; /* Darker primary (Pinkish) */
-    --sidebar-primary: 328 83% 70%; /* Main primary (Pinkish), slightly more saturated */
-    --sidebar-primary-foreground: 330 60% 95%; /* Very light for contrast */
-    --sidebar-accent: 251 90% 96%; /* Very very light accent (Lavender) */
-    --sidebar-accent-foreground: 250 60% 40%; /* Darker accent (Lavender) */
-    --sidebar-border: 328 60% 88%; /* Light primary border (Pinkish) */
-    --sidebar-ring: 328 83% 65%; /* Primary ring (Pinkish) */
+    /* Sidebar variables - updated for new primary (Lavender) and accent (Pinkish) */
+    --sidebar-background: 251 80% 98%; /* Very very light primary (Lavender) */
+    --sidebar-foreground: 250 50% 35%; /* Darker primary (Lavender) */
+    --sidebar-primary: 251 78% 70%; /* Main primary (Lavender), slightly more saturated */
+    --sidebar-primary-foreground: 250 60% 95%; /* Very light for contrast */
+    --sidebar-accent: 328 90% 96%; /* Very very light accent (Pinkish) */
+    --sidebar-accent-foreground: 330 60% 40%; /* Darker accent (Pinkish) */
+    --sidebar-border: 251 60% 88%; /* Light primary border (Lavender) */
+    --sidebar-ring: 251 78% 65%; /* Primary ring (Lavender) */
   }
 
   .dark {
@@ -73,41 +73,41 @@ h1, h2, h3, h4, h5, h6 {
     --popover-foreground: 210 40% 90%;
     
     /* Dark mode colors for new palette */
-    --primary: 328 70% 55%; /* Darker Pink */
-    --primary-foreground: 328 80% 95%; /* Very Light Pink */
+    --primary: 251 70% 55%; /* Darker Lavender */
+    --primary-foreground: 251 80% 95%; /* Very Light Lavender */
     
     --secondary: 198 60% 50%; /* Darker Sky Blue */
     --secondary-foreground: 198 80% 95%; /* Very Light Blue */
     
-    --accent: 251 65% 55%; /* Darker Lavender */
-    --accent-foreground: 251 80% 95%; /* Very Light Lavender */
+    --accent: 328 65% 55%; /* Darker Pink */
+    --accent-foreground: 328 80% 95%; /* Very Light Pink */
     
-    /* Dark derived colors based on new primary (Pinkish) */
-    --muted: 330 30% 30%; /* Darker muted primary (Pink) */
-    --muted-foreground: 330 30% 70%; /* Lighter muted primary (Pink) */
+    /* Dark derived colors based on new primary (Lavender) */
+    --muted: 250 30% 30%; /* Darker muted primary (Lavender) */
+    --muted-foreground: 250 30% 70%; /* Lighter muted primary (Lavender) */
     
     --destructive: 0 70% 50%;
     --destructive-foreground: 0 0% 98%;
     
-    --border: 330 30% 35%; /* Darker primary border (Pink) */
-    --input: 330 30% 25%; /* Darker primary input bg (Pink) */
-    --ring: 328 70% 65%; /* Lighter primary for dark mode rings (Pink) */
+    --border: 250 30% 35%; /* Darker primary border (Lavender) */
+    --input: 250 30% 25%; /* Darker primary input bg (Lavender) */
+    --ring: 251 70% 65%; /* Lighter primary for dark mode rings (Lavender) */
     
-    --chart-1: 328 70% 65%;
+    --chart-1: 251 70% 65%;
     --chart-2: 198 60% 65%;
-    --chart-3: 251 65% 70%;
+    --chart-3: 328 65% 70%;
     --chart-4: 150 50% 60%;
     --chart-5: 30 70% 60%;
 
-    /* Dark Sidebar variables - updated for new primary (Pinkish) and accent (Lavender) */
-    --sidebar-background: 328 40% 18%; /* Dark primary base (Pinkish) */
-    --sidebar-foreground: 328 70% 88%; /* Light primary foreground (Pinkish) */
-    --sidebar-primary: 328 70% 60%; /* Slightly lighter primary for dark sidebar (Pinkish) */
-    --sidebar-primary-foreground: 328 90% 96%; /* Very light */
-    --sidebar-accent: 251 60% 25%; /* Dark accent base (Lavender) */
-    --sidebar-accent-foreground: 251 80% 90%; /* Light accent foreground (Lavender) */
-    --sidebar-border: 328 30% 30%; /* Dark primary border (Pinkish) */
-    --sidebar-ring: 328 70% 60%; /* Primary ring (Pinkish) */
+    /* Dark Sidebar variables - updated for new primary (Lavender) and accent (Pinkish) */
+    --sidebar-background: 251 40% 18%; /* Dark primary base (Lavender) */
+    --sidebar-foreground: 251 70% 88%; /* Light primary foreground (Lavender) */
+    --sidebar-primary: 251 70% 60%; /* Slightly lighter primary for dark sidebar (Lavender) */
+    --sidebar-primary-foreground: 251 90% 96%; /* Very light */
+    --sidebar-accent: 328 60% 25%; /* Dark accent base (Pinkish) */
+    --sidebar-accent-foreground: 328 80% 90%; /* Light accent foreground (Pinkish) */
+    --sidebar-border: 251 30% 30%; /* Dark primary border (Lavender) */
+    --sidebar-ring: 251 70% 60%; /* Primary ring (Lavender) */
   }
 }
 
