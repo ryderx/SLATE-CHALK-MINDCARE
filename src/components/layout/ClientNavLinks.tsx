@@ -8,6 +8,7 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Menu, LogIn, LogOut, Settings, PlusCircle, MessageSquareQuote, List } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { LogoutButton } from './LogoutButton';
+import Image from 'next/image'; // Import Image for mobile menu logo
 
 const navItems = [
   { href: '/', label: 'Home' },
@@ -97,9 +98,16 @@ export function ClientNavLinks({ isAdmin, isLoggedIn }: ClientNavLinksProps) {
                     <span className="sr-only">Toggle navigation menu</span>
                   </Button>
                 </SheetTrigger>
-                <SheetContent side="right">
+                <SheetContent side="right" className="w-[280px] sm:w-[320px]"> {/* Adjust width if needed */}
                   <div className="grid gap-4 py-6">
-                    <Link href="/" className="text-xl font-bold text-primary mb-4">
+                    <Link href="/" className="flex items-center text-xl font-bold text-primary mb-4">
+                        <Image
+                            src="/images/logo.png"
+                            alt="Slate & Chalk MindCare Logo"
+                            width={30}
+                            height={30}
+                            className="mr-2"
+                        />
                       SLATE & CHALK <span className="font-light">MINDCARE</span>
                     </Link>
                     {navItems.map((item) => (

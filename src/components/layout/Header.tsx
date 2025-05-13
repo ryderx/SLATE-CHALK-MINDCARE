@@ -7,6 +7,7 @@ import { Menu, LogIn, LogOut, Settings, PlusCircle, MessageSquareQuote, List } f
 import { getCurrentUserSession } from '@/lib/auth-utils';
 import { LogoutButton } from './LogoutButton'; // Keep LogoutButton if it's a Server Component or used elsewhere
 import { ClientNavLinks } from './ClientNavLinks'; // Import the new Client Component
+import Image from 'next/image'; // Import the Image component
 
 // Removed navItems and adminNavItems as they are now in ClientNavLinks
 
@@ -19,7 +20,14 @@ export async function Header() {
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto flex h-20 items-center justify-between">
-        <Link href="/" className="text-2xl font-bold text-primary hover:text-primary/80 transition-colors">
+        <Link href="/" className="flex items-center text-2xl font-bold text-primary hover:text-primary/80 transition-colors">
+          <Image
+            src="/images/logo.png"
+            alt="Slate & Chalk MindCare Logo"
+            width={40} // Adjust width as needed
+            height={40} // Adjust height as needed
+            className="mr-3" // Add some margin to the right of the logo
+          />
           SLATE & CHALK <span className="font-light">MINDCARE</span>
         </Link>
 
