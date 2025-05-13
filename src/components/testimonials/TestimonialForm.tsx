@@ -10,7 +10,6 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import type { TestimonialFormState } from '@/app/admin/testimonials/actions';
-import { Card, CardContent } from '@/components/ui/card';
 import { Star } from 'lucide-react';
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
@@ -96,7 +95,7 @@ export function TestimonialForm({ testimonial, action, submitButtonText = 'Submi
       </div>
 
       <div>
-        <Label className="text-lg font-medium mb-2 block">Rating (Stars)</n        </Label>
+        <Label className="text-lg font-medium mb-2 block">Rating (Stars)</Label>
          <RadioGroup
             name="stars"
             defaultValue={testimonial?.stars?.toString() ?? '5'} // Default to 5 stars if not set
@@ -123,6 +122,8 @@ export function TestimonialForm({ testimonial, action, submitButtonText = 'Submi
             </p>
            )}
       </div>
+      
+      {/* ImageHint input removed based on schema in actions.ts being optional and nullable, and not present in the form fields previously */}
 
       <Button type="submit" className="bg-accent hover:bg-accent/90 text-accent-foreground" size="lg">
         {submitButtonText}
