@@ -5,9 +5,10 @@ import Link from 'next/link';
 import { NavLink } from './NavLink';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { Menu, LogIn, LogOut, Settings, PlusCircle, MessageSquareQuote, List } from 'lucide-react';
+import { Menu, LogIn, LogOut, Settings, PlusCircle, MessageSquareQuote, List, LayoutDashboard } from 'lucide-react'; // Added LayoutDashboard
 import { LogoutButton } from './LogoutButton';
-import Image from 'next/image'; // Import Image for mobile menu logo
+import Image from 'next/image';
+import { useState, useEffect } from 'react'; // Added useState, useEffect
 
 const navItems = [
   { href: '/', label: 'Home' },
@@ -19,54 +20,69 @@ const navItems = [
 ];
 
 const adminNavItems = [
+    { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
     { href: '/admin/posts', label: 'Manage Posts', icon: List },
-    { href: '/blog/new', label: 'Create Post', icon: PlusCircle },
+    { href: '/admin/blog/new', label: 'Create Post', icon: PlusCircle },
     { href: '/admin/testimonials', label: 'Manage Testimonials', icon: List },
     { href: '/admin/testimonials/new', label: 'Add Testimonial', icon: MessageSquareQuote },
-    // Added Settings link for admin
-    { href: '/admin/settings', label: 'Settings', icon: Settings },
+    { href: '/admin/settings', label: 'App Settings', icon: Settings },
 ];
 
-interface ClientNavLinksProps {
-    isAdmin: boolean;
-    isLoggedIn: boolean; // Also need isLoggedIn for the LogoutButton/Login button
-}
+// Removed props: isAdmin, isLoggedIn. Component will fetch these.
+export function ClientNavLinks() {
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [isAdmin, setIsAdmin] = useState(false);
+    const [isLoadingSession, setIsLoadingSession] = useState(true);
 
-export function ClientNavLinks({ isAdmin, isLoggedIn }: ClientNavLinksProps) {
+    useEffect(() => {
+        async function fetchSession() {
+            try {
+                setIsLoadingSession(true);
+                const response = await fetch('/api/auth/session');
+                if (response.ok) {
+                    const data = await response.json();
+                    setIsLoggedIn(data.isLoggedIn);
+                    setIsAdmin(data.isAdmin);
+                } else {
+                    // Handle error, assume logged out
+                    console.error('API session fetch error:', response.status);
+                    setIsLoggedIn(false);
+                    setIsAdmin(false);
+                }
+            } catch (error) {
+                console.error('Failed to fetch session:', error);
+                setIsLoggedIn(false);
+                setIsAdmin(false);
+            } finally {
+                setIsLoadingSession(false);
+            }
+        }
+        fetchSession();
+    }, []);
+
     return (
         <>
             {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center space-x-4"> {/* Reduced space-x-6 to space-x-4 */}
+            <nav className="hidden md:flex items-center space-x-4">
               {navItems.map((item) => (
                 <NavLink key={item.href} href={item.href}>
                   {item.label}
                 </NavLink>
               ))}
-               {/* Conditionally show Admin links for admins */}
-               {isAdmin && (
-                 // Added a wrapper div for better structure and potential future styling
+               {isLoggedIn && isAdmin && !isLoadingSession && (
                  <div className="flex items-center space-x-3 border-l pl-4 ml-4 border-border">
-                    <span className="text-sm font-semibold text-muted-foreground">Admin:</span>
-                    {/* Directly showing some admin links for quick access */}
-                     <NavLink key="/admin/posts" href="/admin/posts" activeClassName="text-accent font-semibold border-b-2 border-accent">
-                         <List className="mr-1 h-4 w-4 inline-block" /> Manage Posts
-                     </NavLink>
-                     <NavLink key="/blog/new" href="/blog/new" activeClassName="text-accent font-semibold border-b-2 border-accent">
-                         <PlusCircle className="mr-1 h-4 w-4 inline-block" /> Create Post
-                     </NavLink>
-                      <NavLink key="/admin/testimonials" href="/admin/testimonials" activeClassName="text-accent font-semibold border-b-2 border-accent">
-                         <List className="mr-1 h-4 w-4 inline-block" /> Manage Testimonials
-                     </NavLink>
-                      <NavLink key="/admin/settings" href="/admin/settings" activeClassName="text-accent font-semibold border-b-2 border-accent">
-                         <Settings className="mr-1 h-4 w-4 inline-block" /> Settings
-                     </NavLink>
+                    <NavLink href="/admin" activeClassName="text-accent font-semibold border-b-2 border-accent">
+                        <LayoutDashboard className="mr-1 h-4 w-4 inline-block" /> Admin
+                    </NavLink>
                  </div>
-            )}
-        </nav>
+               )}
+            </nav>
 
              {/* Auth Buttons - Desktop */}
              <div className="hidden md:flex items-center space-x-2">
-               {isLoggedIn ? (
+               {isLoadingSession ? (
+                 <div className="h-9 w-20 bg-muted rounded animate-pulse"></div> /* Loading Skeleton */
+               ) : isLoggedIn ? (
                     <LogoutButton />
                 ) : (
                     <Button asChild variant="ghost">
@@ -79,8 +95,9 @@ export function ClientNavLinks({ isAdmin, isLoggedIn }: ClientNavLinksProps) {
 
             {/* Mobile Navigation */}
             <div className="md:hidden flex items-center space-x-2">
-               {/* Auth Buttons - Mobile (before Sheet trigger for layout) */}
-               {isLoggedIn ? (
+               {isLoadingSession ? (
+                  <div className="h-8 w-8 bg-muted rounded-full animate-pulse"></div> /* Loading Skeleton */
+               ) : isLoggedIn ? (
                   <LogoutButton size="icon" variant="outline" className="h-8 w-8"/>
                ) : (
                  <Button asChild variant="ghost" size="icon" className="h-8 w-8">
@@ -97,14 +114,14 @@ export function ClientNavLinks({ isAdmin, isLoggedIn }: ClientNavLinksProps) {
                     <span className="sr-only">Toggle navigation menu</span>
                   </Button>
                 </SheetTrigger>
-                <SheetContent side="right" className="w-[280px] sm:w-[320px]"> {/* Adjust width if needed */}
+                <SheetContent side="right" className="w-[280px] sm:w-[320px]">
                   <div className="grid gap-4 py-6">
                     <Link href="/" className="flex items-center text-xl font-bold text-primary mb-4">
                         <Image
-                            src="/images/SlatenChalk@1x.svg" // Use the same logo as the footer
+                            src="/images/SlatenChalk@1x.svg" 
                             alt="Slate & Chalk MindCare Logo"
-                            width={60} // Adjusted width for mobile menu (proportional to 150x50)
-                            height={20} // Adjusted height for mobile menu (proportional to 150x50)
+                            width={60} 
+                            height={20} 
                             className="mr-2"
                         />
                       SLATE & CHALK <span className="font-light">MINDCARE</span>
@@ -116,15 +133,13 @@ export function ClientNavLinks({ isAdmin, isLoggedIn }: ClientNavLinksProps) {
                            </NavLink>
                        </SheetTrigger>
                     ))}
-                     {/* Conditionally show Admin links for admins in mobile */}
-                     {isAdmin && (
+                     {isLoggedIn && isAdmin && !isLoadingSession && (
                        <>
                         <div className="border-t pt-4 mt-4">
                             <span className="text-sm font-semibold text-muted-foreground px-2">Admin Menu</span>
                             {adminNavItems.map(item => (
                                 <SheetTrigger key={item.href} asChild>
                                     <NavLink href={item.href} className="text-lg text-left justify-start w-full px-2 py-1 text-accent">
-                                        {/* Render the icon if available */}
                                         {item.icon && <item.icon className="mr-2 h-4 w-4" />}
                                         {item.label}
                                     </NavLink>

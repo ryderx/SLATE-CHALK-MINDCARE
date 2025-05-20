@@ -1,17 +1,15 @@
-
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Star, UserCircle, Pencil, Trash2, PlusCircle, Link as LinkIcon } from "lucide-react"; // Added LinkIcon
-import { getTestimonials } from "@/lib/testimonials-data"; // Fetch data dynamically
-import { isAdminSession } from "@/lib/auth-utils"; // Check admin status
+import { Star, UserCircle, Pencil, Trash2, PlusCircle, Link as LinkIcon } from "lucide-react";
+import { fetchTestimonials } from "@/lib/db";
+import { isAdminSession } from "@/lib/auth-utils";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { DeleteTestimonialButton } from "@/components/testimonials/DeleteTestimonialButton"; // Import delete button
+import { DeleteTestimonialButton } from "@/components/testimonials/DeleteTestimonialButton";
 
-// Make the page dynamic to fetch fresh data and check auth status on each request
-export const dynamic = 'force-dynamic';
+export const dynamic = 'force-static';
 
 export default async function TestimonialsPage() {
-  const testimonials = await getTestimonials();
+  const testimonials = await fetchTestimonials();
   const userIsAdmin = await isAdminSession();
 
   return (

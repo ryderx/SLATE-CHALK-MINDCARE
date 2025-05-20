@@ -1,8 +1,8 @@
-
 import type {NextConfig} from 'next';
 
 const nextConfig: NextConfig = {
   /* config options here */
+  output: 'export',
   typescript: {
     // !! WARN !!
     // Dangerously allow production builds to successfully complete even if
@@ -16,6 +16,7 @@ const nextConfig: NextConfig = {
     ignoreDuringBuilds: true, // Keep existing setting
   },
   images: {
+    unoptimized: true, // Disable Image Optimization for static export
     // Configure allowed remote image domains and local serving
     remotePatterns: [
       {
@@ -23,6 +24,12 @@ const nextConfig: NextConfig = {
         hostname: 'picsum.photos',
         port: '',
         pathname: '/**', // Allow any path on picsum.photos
+      },
+      {
+        protocol: 'https',
+        hostname: 'placehold.co', // Added for placeholder images
+        port: '',
+        pathname: '/**',
       },
        // Add localhost if you serve uploaded images locally during development
        // Note: For production, use a proper CDN or cloud storage and add its hostname.
