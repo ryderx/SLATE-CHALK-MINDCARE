@@ -1,3 +1,4 @@
+
 // src/app/api/auth/session/route.ts
 import { NextResponse } from 'next/server';
 import { getCurrentUserSession } from '@/lib/auth-utils';
@@ -11,8 +12,8 @@ export async function GET() {
     }
     return NextResponse.json({ isLoggedIn: false, isAdmin: false });
   } catch (error) {
-    console.error('[API Auth Session] Error fetching session:', error);
+    console.error('[API Auth Session] Critical error in GET /api/auth/session handler:', error);
     // In case of an error, assume logged out for safety
-    return NextResponse.json({ isLoggedIn: false, isAdmin: false, error: 'Failed to fetch session status' }, { status: 500 });
+    return NextResponse.json({ message: 'Failed to fetch session status due to server error.', isLoggedIn: false, isAdmin: false }, { status: 500 });
   }
 }

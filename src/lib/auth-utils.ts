@@ -2,7 +2,7 @@
 // src/lib/auth-utils.ts
 import { cookies } from 'next/headers';
 import type { User } from './types';
-import { SESSION_COOKIE_NAME } from '@/lib/constants'; // Import the constant
+import { SESSION_COOKIE_NAME } from '@/lib/constants';
 
 /**
  * Gets the current user session from the request cookies.
@@ -16,10 +16,7 @@ export function getCurrentUserSession(): User | null {
     const sessionCookie = cookieStore.get(SESSION_COOKIE_NAME);
 
     if (!sessionCookie || typeof sessionCookie.value !== 'string' || sessionCookie.value === '') {
-      // Optionally log if the cookie exists but is invalid, but avoid console logs in production helpers generally
-      // if (sessionCookie && (typeof sessionCookie.value !== 'string' || sessionCookie.value === '')) {
-      //   console.warn('[Auth Utils] Session cookie found but its value is not a non-empty string.');
-      // }
+      // console.log('[Auth Utils] Session cookie not found or invalid.'); // Informational, not an error
       return null;
     }
 
@@ -35,15 +32,15 @@ export function getCurrentUserSession(): User | null {
           isAdmin: sessionData.isAdmin,
         };
       }
-      // console.warn('[Auth Utils] Invalid session data format found in cookie after parsing.');
+      console.warn('[Auth Utils] Invalid session data format found in cookie after parsing:', sessionData);
       return null;
     } catch (parseError) {
-      // console.error('[Auth Utils] Error parsing session cookie value:', parseError);
+      console.error('[Auth Utils] Error parsing session cookie value. Cookie value (first 20 chars):', sessionCookie.value.substring(0,20) , 'Error:', parseError);
       return null;
     }
   } catch (accessError) {
     // This catches errors from cookies() or cookieStore.get() if they were to throw
-    // console.error('[Auth Utils] Unexpected error accessing or validating session cookie:', accessError);
+    console.error('[Auth Utils] Unexpected error accessing or validating session cookie (e.g., cookies() failed):', accessError);
     return null;
   }
 }
@@ -55,7 +52,7 @@ export function getCurrentUserSession(): User | null {
  */
 export async function isAdminSession(): Promise<boolean> {
   // Simulate potential async operations if needed in the future
-  await Promise.resolve();
+  // await Promise.resolve(); // Not strictly necessary if getCurrentUserSession is sync
   const user = getCurrentUserSession();
   return !!user?.isAdmin;
 }
