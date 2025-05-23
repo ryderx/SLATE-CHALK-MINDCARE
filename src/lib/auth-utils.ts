@@ -4,8 +4,6 @@ import { cookies } from 'next/headers';
 import type { User } from './types';
 import { SESSION_COOKIE_NAME } from '@/lib/constants'; // Import the constant
 
-// const SESSION_COOKIE_NAME = 'auth_session'; // Removed, using imported constant
-
 /**
  * Gets the current user session from the request cookies.
  * IMPORTANT: This function is intended for SERVER-SIDE use (Server Components, Route Handlers, Server Actions).
@@ -13,32 +11,39 @@ import { SESSION_COOKIE_NAME } from '@/lib/constants'; // Import the constant
  * @returns {User | null} The user object if logged in, otherwise null.
  */
 export function getCurrentUserSession(): User | null {
-  const cookieStore = cookies();
-  const sessionCookie = cookieStore.get(SESSION_COOKIE_NAME);
-
-  if (!sessionCookie || !sessionCookie.value) {
-    return null;
-  }
-
   try {
-    // **Insecure - for demo only.** Use proper session validation in production.
-    const sessionData = JSON.parse(Buffer.from(sessionCookie.value, 'base64').toString());
+    const cookieStore = cookies();
+    const sessionCookie = cookieStore.get(SESSION_COOKIE_NAME);
 
-    // Basic check for expected properties
-    if (sessionData && typeof sessionData === 'object' && sessionData.email && sessionData.isAdmin !== undefined) {
-       // You might want more validation here (e.g., check loggedInAt timestamp)
-      return {
-        id: `user-${sessionData.email}`, // Generate a mock ID
-        email: sessionData.email,
-        isAdmin: sessionData.isAdmin,
-      };
+    if (!sessionCookie || typeof sessionCookie.value !== 'string' || sessionCookie.value === '') {
+      // Optionally log if the cookie exists but is invalid, but avoid console logs in production helpers generally
+      // if (sessionCookie && (typeof sessionCookie.value !== 'string' || sessionCookie.value === '')) {
+      //   console.warn('[Auth Utils] Session cookie found but its value is not a non-empty string.');
+      // }
+      return null;
     }
-     console.warn('[Auth Utils] Invalid session data format found in cookie.');
-    return null;
-  } catch (error) {
-    console.error('[Auth Utils] Error parsing session cookie:', error);
-     // Optionally delete corrupted cookie here if needed, though status check might handle it
-    // cookieStore.delete(SESSION_COOKIE_NAME);
+
+    // Inner try-catch specifically for parsing logic
+    try {
+      // **Insecure - for demo only.** Use proper session validation in production.
+      const sessionData = JSON.parse(Buffer.from(sessionCookie.value, 'base64').toString());
+
+      if (sessionData && typeof sessionData === 'object' && sessionData.email && sessionData.isAdmin !== undefined) {
+        return {
+          id: `user-${sessionData.email}`, // Generate a mock ID
+          email: sessionData.email,
+          isAdmin: sessionData.isAdmin,
+        };
+      }
+      // console.warn('[Auth Utils] Invalid session data format found in cookie after parsing.');
+      return null;
+    } catch (parseError) {
+      // console.error('[Auth Utils] Error parsing session cookie value:', parseError);
+      return null;
+    }
+  } catch (accessError) {
+    // This catches errors from cookies() or cookieStore.get() if they were to throw
+    // console.error('[Auth Utils] Unexpected error accessing or validating session cookie:', accessError);
     return null;
   }
 }
@@ -54,4 +59,3 @@ export async function isAdminSession(): Promise<boolean> {
   const user = getCurrentUserSession();
   return !!user?.isAdmin;
 }
-
