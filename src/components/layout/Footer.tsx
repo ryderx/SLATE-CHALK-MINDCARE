@@ -1,3 +1,4 @@
+
 // src/components/layout/Footer.tsx
 'use client';
 
@@ -17,17 +18,26 @@ export function Footer() {
 
     const fetchSocialLinks = async () => {
       try {
-        const response = await fetch('/api/settings'); // Updated API endpoint
+        const response = await fetch('/api/settings');
         if (response.ok) {
           const data: AppSettings = await response.json();
           if (data.socialLinks) {
             setSocialLinks(data.socialLinks);
           }
         } else {
-          console.error('Failed to fetch social media links for footer');
+          // Enhanced error logging
+          let errorBody = 'Could not read error body from server.';
+          try {
+            errorBody = await response.text();
+          } catch (e) {
+            // console.warn('Failed to read error body:', e);
+          }
+          console.error(
+            `Failed to fetch social media links for footer. Status: ${response.status} ${response.statusText}. Server response: ${errorBody}`
+          );
         }
-      } catch (error) {
-        console.error('Error fetching social media links for footer:', error);
+      } catch (error) { // This catches network errors or issues with fetch itself
+        console.error('Error fetching social media links for footer (network or fetch issue):', error);
       }
     };
 
@@ -44,7 +54,7 @@ export function Footer() {
               <Image
                 src="/images/SlatenChalk@1x.svg"
                 alt="Slate & Chalk MindCare Logo"
-                width={150} 
+                width={150}
                 height={50}
                 className="mb-2"
                 unoptimized={true} // Add unoptimized for SVG
@@ -116,10 +126,9 @@ export function Footer() {
               </li>
             )}
             {/* Render a placeholder or nothing if not isClient to match server render */}
-            {!isClient && (
+            {!isClient && socialLinks === null && ( // Show placeholder only while loading and not yet errored
                 <>
-                    {/* You can render empty LIs or a single placeholder LI if you want to reserve space */}
-                    {/* For simplicity, we can render nothing here, and the Login link will be the only initial item */}
+                  <li><span className="text-muted-foreground/50">Loading links...</span></li>
                 </>
             )}
             <li>
